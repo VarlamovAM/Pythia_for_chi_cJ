@@ -108,6 +108,27 @@ int main(int argc, char* argv[]) {
   TH1F *hChiC0_pt_all     = new TH1F("hChiC0_pt_all"     ,"All #chi_{c0} p_{T} spectrum" , nPtBins, ptMin, ptMax);
   hChiC0_pt_all->Sumw2();
 
+  TH1F *hChiC0_pt_cndtn_1 = new TH1F("hChiC0_pt_cndtn_1" ,"#chi_{c0} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
+  hChiC2_pt_cndtn_1->Sumw2();
+
+  TH1F *hChiC0_y_cndtn_1  = new TH1F("hChiC0_y_cndtn_1"  ,"#chi_{c0} y spectrum"  ,nyBins, yMin, yMax);
+  hChiC2_y_cndtn_1->Sumw2(); 
+
+  TH1F *hChiC0_pt_cndtn_2 = new TH1F("hChiC0_pt_cndtn_2" ,"#chi_{c0} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
+  hChiC2_pt_cndtn_1->Sumw2();
+
+  TH1F *hChiC0_y_cndtn_2  = new TH1F("hChiC0_y_cndtn_2"  ,"#chi_{c0} y spectrum"  ,nyBins, yMin, yMax);
+  hChiC2_y_cndtn_1->Sumw2();
+
+  TH1F *hGamma_chic0_pt_all     = new TH1F("hGamma_chic0_pt_all"     ,"#gamma p_{T} spectrum ", nPtBins, ptMin, ptMax);
+  hGamma_pt_all->Sumw2();       
+  
+  TH1F *hPositron_chic0_pt_all  = new TH1F("hPositron_chic0_pt_all"  ,"e^{+}  p_{T} spectrum", nPtBins, ptMin, ptMax);
+  hPositron_pt_all ->Sumw2();
+
+  TH1F *hElectron_chic0_pt_all  = new TH1F("hElectron_chic0_pt_all"  ,"e^{-}  p_{T} spectrum", nPtBins, ptMin, ptMax);
+  hElectron_pt_all ->Sumw2();
+
   
 
   const int idChic0        =  10441;
@@ -212,8 +233,7 @@ int main(int argc, char* argv[]) {
 		    hChiC2_y_cndtn_2  ->Fill(y);
 
 		  }
-
-	      }
+	    }
  
 
 	     if (pythia.event[dghtJ2].id() == idElectron)  {
@@ -254,12 +274,9 @@ int main(int argc, char* argv[]) {
 		    hChiC2_y_cndtn_2  ->Fill(y);
 
 		  }
- 
-
-	      }
+ 	     }
 	  }
 	}
-
       }
 
       if (pythia.event[i].id() == idChic0 &&
@@ -269,8 +286,121 @@ int main(int argc, char* argv[]) {
 	Double_t pt = pythia.event[i].pT(); // transverse momentum
 	hChiC0_pt_all->Fill(pt);
 	Double_t y  = pythia.event[i].y(); 
+
+
+
+	// Find daughters of chi_c0
+	int dghtChi1 = pythia.event[i].daughter1(); // first daughter
+	int dghtChi2 = pythia.event[i].daughter2(); // last  daughter
+
+	// skip event if the number of chi_c0 daughters is not 2
+	if (dghtChi2 - dghtChi1 != 1) continue;
+
+	// select decay chi_c0 -> J/psi gamma
+	if ( pythia.event[dghtChi1].id() == idJpsi    &&
+	     pythia.event[dghtChi2].id() == idPhoton)  {
+
+	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
+	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
+
+	  
+	  // skip event if the number of J/psi daughters is not 2
+	  if (dghtJ2 - dghtJ1 != 1) continue;
+
+	  Double_t pt_gamma = pythia.event[dghtChi2].pT();
+	  Double_t eta_gamma = pythia.event[dghtChi2].eta();
+
+	  hGamma_chic0_pt_all->Fill(pt_gamma);
+
+
+	  // select decay J/psi -> e+ e-
+	  if (abs(pythia.event[dghtJ1].id()) == idElectron &&
+	      abs(pythia.event[dghtJ2].id()) == idElectron) {
+              
+	    if (pythia.event[dghtJ1].id() == idElectron)  {
+		Double_t pt_positron = pythia.event[dghtJ2].pT();
+                Double_t pt_electron = pythia.event[dghtJ1].pT();
+
+                Double_t eta_positron = pythia.event[dghtJ2].eta();
+                Double_t eta_electron = pythia.event[dghtJ1].eta();
+                
+
+		hPositron_chic0_pt_all->Fill(pt_positron);
+	        hElectron_chic0_pt_all->Fill(pt_electron);
+
+		if (abs(eta_positron) < 0,8  &&
+                    abs(eta_electron) < 0,8  &&
+                    abs(eta_gamma)    < 0,12 &&
+		    pt_electron       > 0.5  &&
+		    pt_positron       > 0.5  &&
+		    pt_gamma          > 1.0) 
+		 
+		  {  
+		  
+		    hChiC0_pt_cndtn_1 ->Fill(pt);
+		    hChiC0_y_cndtn_1  ->Fill(y);
+
+		  }
+
+		if (abs(eta_positron) < 0,8  &&
+                    abs(eta_electron) < 0,8  &&
+                    abs(eta_gamma)    < 0,12 &&
+		    pt_electron       > 0.5  &&
+		    pt_positron       > 0.5  &&
+		    pt_gamma          > 5.0)  
+		  
+		  { 
+		  
+		    hChiC0_pt_cndtn_2 ->Fill(pt);
+		    hChiC0_y_cndtn_2  ->Fill(y);
+
+		  }
+
+	    }
+
+
+		 if (pythia.event[dghtJ2].id() == idElectron)  {
+	        Double_t pt_positron =pythia.event[dghtJ1].pT();
+                Double_t pt_electron = pythia.event[dghtJ2].pT();
+       
+                Double_t eta_positron = pythia.event[dghtJ1].eta();
+                Double_t eta_electron = pythia.event[dghtJ2].eta();
+
+	        hPositron_pt_all->Fill(pt_positron);
+		hElectron_pt_all->Fill(pt_electron);
+	
+		if (abs(eta_positron) < 0,8  &&
+                    abs(eta_electron) < 0,8  &&
+                    abs(eta_gamma)    < 0,12 &&
+		    pt_electron       > 0.5  &&
+		    pt_positron       > 0.5  &&
+		    pt_gamma          > 1.0)   
+
+		  { 
+		  
+		    hChiC0_pt_cndtn_1 ->Fill(pt);
+		    hChiC0_y_cndtn_1  ->Fill(y);
+		 
+		  }
+		
+		if (abs(eta_positron) < 0,8  &&
+                    abs(eta_electron) < 0,8  &&
+                    abs(eta_gamma)    < 0,12 &&
+		    pt_electron       > 0.5  &&
+		    pt_positron       > 0.5  &&
+		    pt_gamma          > 5.0)
+
+
+		  { 
+		  
+		    hChiC0_pt_cndtn_2 ->Fill(pt);
+		    hChiC0_y_cndtn_2  ->Fill(y);
+
+		  }
+		 }
+	  }
+	}
       }
-      
     }
 
     
@@ -290,30 +420,44 @@ int main(int argc, char* argv[]) {
   double ptBinSize = (ptMax-ptMin) / nPtBins;
   double yBinSize  = (yMax-yMin) / nyBins;
 
-  hChiC2_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hChiC0_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hGamma_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hElectron_pt_all    ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hPositron_pt_all    ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hChiC2_pt_cndtn_1   ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hChiC2_pt_cndtn_2   ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
-  hChiC2_y_cndtn_1    ->Scale(sigmaweight/(yBinSize * 2. * ymax));
-  hChiC2_y_cndtn_2    ->Scale(sigmaweight/(yBinSize * 2. * ymax)); 
+  hChiC2_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC0_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hGamma_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hGamma_chic0_pt_all      ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hElectron_pt_all         ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hElectron_chic0_pt_all   ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hPositron_pt_all         ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hPositron_chic0_pt_all   ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC2_pt_cndtn_1        ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC0_pt_cndtn_1        ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC2_pt_cndtn_2        ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC0_pt_cndtn_2        ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC2_y_cndtn_1         ->Scale(sigmaweight/(yBinSize * 2. * ymax));
+  hChiC0_y_cndtn_1         ->Scale(sigmaweight/(yBinSize * 2. * ymax));
+  hChiC2_y_cndtn_2         ->Scale(sigmaweight/(yBinSize * 2. * ymax)); 
+  hChiC0_y_cndtn_2         ->Scale(sigmaweight/(yBinSize * 2. * ymax));
 
   // Save histogram on file and close file.
   char fn[1024];
   sprintf(fn, "%s", "pythia_chic2.root");
   TFile* outFile = new TFile(fn, "RECREATE");
  
-  hChiC2_pt_all      ->Write();
-  hChiC0_pt_all      ->Write();
-  hChiC2_pt_cndtn_1  ->Write();
-  hChiC2_y_cndtn_1   ->Write();
-  hChiC2_pt_cndtn_2  ->Write();
-  hChiC2_y_cndtn_2   ->Write();
-  hGamma_pt_all      ->Write();
-  hElectron_pt_all   ->Write();
-  hPositron_pt_all   ->Write();
+  hChiC2_pt_all           ->Write();
+  hChiC0_pt_all           ->Write();
+  hChiC2_pt_cndtn_1       ->Write();
+  hChiC0_pt_cndtn_1       ->Write();
+  hChiC2_y_cndtn_1        ->Write();
+  hChiC0_y_cndtn_1        ->Write();
+  hChiC2_pt_cndtn_2       ->Write();
+  hChiC0_pt_cndtn_2       ->Write();
+  hChiC2_y_cndtn_2        ->Write();
+  hChiC0_y_cndtn_2        ->Write();
+  hGamma_pt_all           ->Write();
+  hGamma_chic0_pt_all     ->Write();
+  hElectron_pt_all        ->Write();
+  hElectron_chic0_pt_all  ->Write();
+  hPositron_pt_all        ->Write();
+  hPositron_chic0_pt_all  ->Write();
 
  
   outFile->Close();
