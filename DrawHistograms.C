@@ -2,8 +2,9 @@ DrawHistograms()
 
 {
 
-  TFile *file = new TFile("pythia_chic2_sum.root","old");
+  TFile *file = new TFile("pythia_chic2.root","old");
   TH1F *hChiC2_pt_all     = (TH1F*)file->Get("hChiC2_pt_all");
+  TH1F *hChiC0_pt_all     = (TH1F*)file->Get("hChiC0_pt_all");
   TH1F *hGamma_pt_all     = (TH1F*)file->Get("hGamma_pt_all");
   TH1F *hElectron_pt_all  = (TH1F*)file->Get("hElectron_pt_all"); 
   TH1F *hPositron_pt_all  = (TH1F*)file->Get("hPositron_pt_all");
@@ -21,6 +22,16 @@ DrawHistograms()
   hChiC2_pt_all        ->SetAxisRange(0.,50.,"X");
   hChiC2_pt_all        ->SetMarkerStyle(20);
   hChiC2_pt_all        ->SetLineWidth(2);
+
+  //hChiC0_pt_All
+
+  hChiC0_pt_all        ->SetXTitle("p_{T}, GeV/c");
+  hChiC0_pt_all        ->SetYTitle("d#sigma/dp_{T}, mb/(GeV/c)");
+  hChiC0_pt_all        ->SetTitleOffset(1.4,"Y");
+  //hChiC0_pt_all        ->SetStats(0);
+  hChiC0_pt_all        ->SetAxisRange(0.,50.,"X");
+  hChiC0_pt_all        ->SetMarkerStyle(20);
+  hChiC0_pt_all        ->SetLineWidth(2);
 
   //hGamma
   
@@ -94,7 +105,7 @@ DrawHistograms()
   hChiC2_y_cndtn_2     ->SetLineWidth(2);
 
 
-  // TCanvas *c1 = new TCanvas("c1","hChiC2_pt_all",0,0,800,600);
+  //TCanvas *c1 = new TCanvas("c1","hChiC2_pt_all",0,0,800,600);
   //hChiC2_pt_all        ->Draw();
   //c1->Print("hChiC2_pt_all.pdf");
 
@@ -125,5 +136,9 @@ DrawHistograms()
   //TCanvas *c8 = new TCanvas("c8","hChiC2_y_cndtn_2",0,0,800,600);
   //hChiC2_y_cndtn_2     ->Draw();
   //c8->Print("hChiC2_y_cndtn_2.pdf");
+
+  //TCanvas *c9 = new TCanvas("c9","hChiC0_pt_all",0,0,800,600);
+  //hChiC0_pt_all     ->Draw();
+  //c9->Print("hChiC2_pt_all.pdf");
 
 }

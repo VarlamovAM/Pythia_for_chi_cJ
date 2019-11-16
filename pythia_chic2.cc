@@ -105,9 +105,12 @@ int main(int argc, char* argv[]) {
   TH1F *hElectron_pt_all  = new TH1F("hElectron_pt_all"  ,"e_{-}  p_{T} spectrum", nPtBins, ptMin, ptMax);
   hElectron_pt_all ->Sumw2();
 
+  TH1F *hChiC0_pt_all     = new TH1F("hChiC0_pt_all"     ,"All #chi_{c0} p_{T} spectrum" , nPtBins, ptMin, ptMax);
+  hChiC0_pt_all->Sumw2();
+
   
 
-  const int idChic0        =  441;
+  const int idChic0        =  10441;
   const int idChic2        =  445;
   const int idJpsi         =  443;
   const int idElectron     =  11;
@@ -258,8 +261,19 @@ int main(int argc, char* argv[]) {
 	}
 
       }
+
+      if (pythia.event[i].id() == idChic0 &&
+	  pythia.event[i].status() ==-62 &&
+	  fabs(pythia.event[i].y()) <= ymax) {
+
+	Double_t pt = pythia.event[i].pT(); // transverse momentum
+	hChiC0_pt_all->Fill(pt);
+	Double_t y  = pythia.event[i].y(); 
+      }
+      
     }
 
+    
     // Fill charged multiplicity in histogram. End event loop.
   }
 
@@ -277,6 +291,7 @@ int main(int argc, char* argv[]) {
   double yBinSize  = (yMax-yMin) / nyBins;
 
   hChiC2_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
+  hChiC0_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
   hGamma_pt_all       ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
   hElectron_pt_all    ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
   hPositron_pt_all    ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
@@ -291,6 +306,7 @@ int main(int argc, char* argv[]) {
   TFile* outFile = new TFile(fn, "RECREATE");
  
   hChiC2_pt_all      ->Write();
+  hChiC0_pt_all      ->Write();
   hChiC2_pt_cndtn_1  ->Write();
   hChiC2_y_cndtn_1   ->Write();
   hChiC2_pt_cndtn_2  ->Write();
