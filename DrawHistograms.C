@@ -3,23 +3,23 @@ DrawHistograms()
 {
 
   TFile *file = new TFile("pythia_chic2.root","old");
-  TH1F *hChiC2_pt_all     = (TH1F*)file->Get("hChiC2_pt_all");
-  TH1F *hChiC0_pt_all     = (TH1F*)file->Get("hChiC0_pt_all");
-  TH1F *hGamma_pt_all     = (TH1F*)file->Get("hGamma_pt_all");
-  TH1F *hElectron_pt_all  = (TH1F*)file->Get("hElectron_pt_all"); 
-  TH1F *hPositron_pt_all  = (TH1F*)file->Get("hPositron_pt_all");
-  TH1F *hChiC2_pt_cndtn_1 = (TH1F*)file->Get("hChiC2_pt_cndtn_1");
-  TH1F *hChiC2_y_cndtn_1  = (TH1F*)file->Get("hChiC2_y_cndtn_1");
-  TH1F *hChiC2_pt_cndtn_2 = (TH1F*)file->Get("hChiC2_pt_cndtn_2");
-  TH1F *hChiC2_y_cndtn_2  = (TH1F*)file->Get("hChiC2_y_cndtn_2");
-  TH1F *hGamma_chic0_pt_all     = (TH1F*)file->Get("hGamma_chic0_pt_all");
-  TH1F *hElectron_chic0_pt_all  = (TH1F*)file->Get("hElectron_chic0_pt_all"); 
-  TH1F *hPositron_chic0_pt_all  = (TH1F*)file->Get("hPositron_chic0_pt_all");
-  TH1F *hChiC0_pt_cndtn_1 = (TH1F*)file->Get("hChiC0_pt_cndtn_1");
-  TH1F *hChiC0_y_cndtn_1  = (TH1F*)file->Get("hChiC0_y_cndtn_1");
-  TH1F *hChiC0_pt_cndtn_2 = (TH1F*)file->Get("hChiC0_pt_cndtn_2");
-  TH1F *hChiC0_y_cndtn_2  = (TH1F*)file->Get("hChiC0_y_cndtn_2");
-
+  TH1F *hChiC2_pt_all            = (TH1F*)file->Get("hChiC2_pt_all");
+  TH1F *hChiC0_pt_all            = (TH1F*)file->Get("hChiC0_pt_all");
+  TH1F *hGamma_pt_all            = (TH1F*)file->Get("hGamma_pt_all");
+  TH1F *hElectron_pt_all         = (TH1F*)file->Get("hElectron_pt_all"); 
+  TH1F *hPositron_pt_all         = (TH1F*)file->Get("hPositron_pt_all");
+  TH1F *hChiC2_pt_cndtn_1        =  (TH1F*)file->Get("hChiC2_pt_cndtn_1");
+  TH1F *hChiC2_y_cndtn_1         = (TH1F*)file->Get("hChiC2_y_cndtn_1");
+  TH1F *hChiC2_pt_cndtn_2        = (TH1F*)file->Get("hChiC2_pt_cndtn_2");
+  TH1F *hChiC2_y_cndtn_2         = (TH1F*)file->Get("hChiC2_y_cndtn_2");
+  TH1F *hGamma_chic0_pt_all      = (TH1F*)file->Get("hGamma_chic0_pt_all");
+  TH1F *hElectron_chic0_pt_all   = (TH1F*)file->Get("hElectron_chic0_pt_all"); 
+  TH1F *hPositron_chic0_pt_all   = (TH1F*)file->Get("hPositron_chic0_pt_all");
+  TH1F *hChiC0_pt_cndtn_1        = (TH1F*)file->Get("hChiC0_pt_cndtn_1");
+  TH1F *hChiC0_y_cndtn_1         = (TH1F*)file->Get("hChiC0_y_cndtn_1");
+  TH1F *hChiC0_pt_cndtn_2        = (TH1F*)file->Get("hChiC0_pt_cndtn_2");
+  TH1F *hChiC0_y_cndtn_2         = (TH1F*)file->Get("hChiC0_y_cndtn_2");
+ 
 
   //hChiC2_pt_All
 
