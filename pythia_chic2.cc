@@ -121,13 +121,13 @@ int main(int argc, char* argv[]) {
   hChiC2_y_cndtn_1->Sumw2();
 
   TH1F *hGamma_chic0_pt_all     = new TH1F("hGamma_chic0_pt_all"     ,"#gamma p_{T} spectrum ", nPtBins, ptMin, ptMax);
-  hGamma_pt_all->Sumw2();       
+  hGamma_chic0_pt_all->Sumw2();       
   
   TH1F *hPositron_chic0_pt_all  = new TH1F("hPositron_chic0_pt_all"  ,"e^{+}  p_{T} spectrum", nPtBins, ptMin, ptMax);
-  hPositron_pt_all ->Sumw2();
+  hPositron_chic0_pt_all ->Sumw2();
 
   TH1F *hElectron_chic0_pt_all  = new TH1F("hElectron_chic0_pt_all"  ,"e^{-}  p_{T} spectrum", nPtBins, ptMin, ptMax);
-  hElectron_pt_all ->Sumw2();
+  hElectron_chic0_pt_all ->Sumw2();
 
   
 
@@ -205,9 +205,9 @@ int main(int argc, char* argv[]) {
 	        hElectron_pt_all->Fill(pt_electron);
 
 
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 1.0) 
@@ -220,9 +220,9 @@ int main(int argc, char* argv[]) {
 		  }
 
 
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 5.0)  
@@ -246,9 +246,9 @@ int main(int argc, char* argv[]) {
 	        hPositron_pt_all->Fill(pt_positron);
 		hElectron_pt_all->Fill(pt_electron);
 	
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 1.0)   
@@ -260,9 +260,9 @@ int main(int argc, char* argv[]) {
 		 
 		  }
 		
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 5.0)
@@ -328,9 +328,9 @@ int main(int argc, char* argv[]) {
 		hPositron_chic0_pt_all->Fill(pt_positron);
 	        hElectron_chic0_pt_all->Fill(pt_electron);
 
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 1.0) 
@@ -369,9 +369,9 @@ int main(int argc, char* argv[]) {
 	        hPositron_pt_all->Fill(pt_positron);
 		hElectron_pt_all->Fill(pt_electron);
 	
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 1.0)   
@@ -383,9 +383,9 @@ int main(int argc, char* argv[]) {
 		 
 		  }
 		
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 5.0)
