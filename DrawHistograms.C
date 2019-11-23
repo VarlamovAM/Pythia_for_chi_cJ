@@ -56,7 +56,7 @@ DrawHistograms()
   hChiC1_pt_all        ->SetTitleOffset(1.4,"Y");
   //hChiC1_pt_all        ->SetStats(0);
   hChiC1_pt_all        ->SetAxisRange(0.,50.,"X");
-  hChiC1_pt_all        ->SetMarkerStyle(20);
+  hChiC1_pt_all        ->SetMarkerStyle(2);
   hChiC1_pt_all        ->SetLineWidth(2);
 
   //hGamma
@@ -273,8 +273,8 @@ DrawHistograms()
   hChiC1_y_cndtn_2     ->SetLineWidth(2);
 
 
-  TCanvas *c1 = new TCanvas("c1","hChiC2_pt_all",0,0,800,600);
-  hChiC2_pt_all        ->Draw();
+  //TCanvas *c1 = new TCanvas("c1","hChiC2_pt_all",0,0,800,600);
+  //hChiC2_pt_all        ->Draw();
   //c1->Print("hChiC2_pt_all.pdf");
 
   //TCanvas *c2 = new TCanvas("c2","hgamma",0,0,800,600);
@@ -305,8 +305,8 @@ DrawHistograms()
   //hChiC2_y_cndtn_2     ->Draw();
   //c8->Print("hChiC2_y_cndtn_2.pdf");
 
-  TCanvas *c9 = new TCanvas("c9","hChiC0_pt_all",0,0,800,600);
-  hChiC0_pt_all     ->Draw();
+  //TCanvas *c9 = new TCanvas("c9","hChiC0_pt_all",0,0,800,600);
+  //hChiC0_pt_all     ->Draw();
   //c9->Print("hChiC0_pt_all.pdf");
 
   //TCanvas *c10 = new TCanvas("c10","hgamma_chic0",0,0,800,600);
@@ -337,8 +337,8 @@ DrawHistograms()
   //hChiC0_y_cndtn_2     ->Draw();
   //c16->Print("hChiC0_y_cndtn_2.pdf");
 
-  TCanvas *c17 = new TCanvas("c17","hChiC1_pt_all",0,0,800,600);
-  hChiC1_pt_all     ->Draw();
+  //TCanvas *c17 = new TCanvas("c17","hChiC1_pt_all",0,0,800,600);
+  //hChiC1_pt_all     ->Draw();
   //c9->Print("hChiC1_pt_all.pdf");
 
   //TCanvas *c18 = new TCanvas("c18","hgamma_chic1",0,0,800,600);
