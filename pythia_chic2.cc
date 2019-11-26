@@ -91,10 +91,10 @@ int main(int argc, char* argv[]) {
   hChiC2_y_cndtn_1->Sumw2(); 
 
   TH1F *hChiC2_pt_cndtn_2 = new TH1F("hChiC2_pt_cndtn_2" ,"#chi_{c2} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
-  hChiC2_pt_cndtn_1->Sumw2();
+  hChiC2_pt_cndtn_2->Sumw2();
 
   TH1F *hChiC2_y_cndtn_2  = new TH1F("hChiC2_y_cndtn_2"  ,"#chi_{c2} y spectrum"  ,nyBins, yMin, yMax);
-  hChiC2_y_cndtn_1->Sumw2();
+  hChiC2_y_cndtn_2->Sumw2();
 
   TH1F *hGamma_pt_all     = new TH1F("hGamma_pt_all"     ,"#gamma p_{T} spectrum ", nPtBins, ptMin, ptMax);
   hGamma_pt_all->Sumw2();       
@@ -109,16 +109,16 @@ int main(int argc, char* argv[]) {
   hChiC0_pt_all->Sumw2();
 
   TH1F *hChiC0_pt_cndtn_1 = new TH1F("hChiC0_pt_cndtn_1" ,"#chi_{c0} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
-  hChiC2_pt_cndtn_1->Sumw2();
+  hChiC0_pt_cndtn_1->Sumw2();
 
   TH1F *hChiC0_y_cndtn_1  = new TH1F("hChiC0_y_cndtn_1"  ,"#chi_{c0} y spectrum"  ,nyBins, yMin, yMax);
-  hChiC2_y_cndtn_1->Sumw2(); 
+  hChiC0_y_cndtn_1->Sumw2(); 
 
   TH1F *hChiC0_pt_cndtn_2 = new TH1F("hChiC0_pt_cndtn_2" ,"#chi_{c0} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
-  hChiC2_pt_cndtn_1->Sumw2();
+  hChiC0_pt_cndtn_2->Sumw2();
 
   TH1F *hChiC0_y_cndtn_2  = new TH1F("hChiC0_y_cndtn_2"  ,"#chi_{c0} y spectrum"  ,nyBins, yMin, yMax);
-  hChiC2_y_cndtn_1->Sumw2();
+  hChiC0_y_cndtn_2->Sumw2();
 
   TH1F *hGamma_chic0_pt_all     = new TH1F("hGamma_chic0_pt_all"     ,"#gamma p_{T} spectrum ", nPtBins, ptMin, ptMax);
   hGamma_chic0_pt_all->Sumw2();       
@@ -130,28 +130,28 @@ int main(int argc, char* argv[]) {
   hElectron_chic0_pt_all ->Sumw2();
 
   TH1F *hChiC1_pt_all     = new TH1F("hChiC1_pt_all"     ,"All #chi_{c1} p_{T} spectrum" , nPtBins, ptMin, ptMax);
-  hChiC0_pt_all->Sumw2();
+  hChiC1_pt_all->Sumw2();
 
   TH1F *hChiC1_pt_cndtn_1 = new TH1F("hChiC1_pt_cndtn_1" ,"#chi_{c1} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
-  hChiC2_pt_cndtn_1->Sumw2();
+  hChiC1_pt_cndtn_1->Sumw2();
 
   TH1F *hChiC1_y_cndtn_1  = new TH1F("hChiC1_y_cndtn_1"  ,"#chi_{c1} y spectrum"  ,nyBins, yMin, yMax);
-  hChiC2_y_cndtn_1->Sumw2(); 
+  hChiC1_y_cndtn_1->Sumw2(); 
 
   TH1F *hChiC1_pt_cndtn_2 = new TH1F("hChiC1_pt_cndtn_2" ,"#chi_{c1} p_{T} spectrum"  ,nPtBins, ptMin, ptMax);
-  hChiC2_pt_cndtn_1->Sumw2();
+  hChiC1_pt_cndtn_2->Sumw2();
 
   TH1F *hChiC1_y_cndtn_2  = new TH1F("hChiC1_y_cndtn_2"  ,"#chi_{c1} y spectrum"  ,nyBins, yMin, yMax);
-  hChiC2_y_cndtn_1->Sumw2();
+  hChiC1_y_cndtn_2->Sumw2();
 
   TH1F *hGamma_chic1_pt_all     = new TH1F("hGamma_chic1_pt_all"     ,"#gamma p_{T} spectrum ", nPtBins, ptMin, ptMax);
-  hGamma_chic0_pt_all->Sumw2();       
+  hGamma_chic1_pt_all->Sumw2();       
   
   TH1F *hPositron_chic1_pt_all  = new TH1F("hPositron_chic1_pt_all"  ,"e^{+}  p_{T} spectrum", nPtBins, ptMin, ptMax);
-  hPositron_chic0_pt_all ->Sumw2();
+  hPositron_chic1_pt_all ->Sumw2();
 
   TH1F *hElectron_chic1_pt_all  = new TH1F("hElectron_chic1_pt_all"  ,"e^{-}  p_{T} spectrum", nPtBins, ptMin, ptMax);
-  hElectron_chic0_pt_all ->Sumw2();
+  hElectron_chic1_pt_all ->Sumw2();
 
   
 
@@ -367,9 +367,9 @@ int main(int argc, char* argv[]) {
 
 		  }
 
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 5.0)  
@@ -490,9 +490,9 @@ int main(int argc, char* argv[]) {
 
 		  }
 
-		if (abs(eta_positron) < 0,8  &&
-                    abs(eta_electron) < 0,8  &&
-                    abs(eta_gamma)    < 0,12 &&
+		if (abs(eta_positron) < 0.8  &&
+                    abs(eta_electron) < 0.8  &&
+                    abs(eta_gamma)    < 0.12 &&
 		    pt_electron       > 0.5  &&
 		    pt_positron       > 0.5  &&
 		    pt_gamma          > 5.0)  
