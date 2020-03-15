@@ -31,6 +31,8 @@
 // ROOT, for saving file.
 #include "TFile.h"
 
+#include "TLorentzVector.h"
+
 
 
 
@@ -153,7 +155,7 @@ int main(int argc, char* argv[]) {
   TH1F *hElectron_chic1_pt_all  = new TH1F("hElectron_chic1_pt_all"  ,"e^{-}  p_{T} spectrum", nPtBins, ptMin, ptMax);
   hElectron_chic1_pt_all ->Sumw2();
 
-  
+  TH2F *hMassGamElecPosi = new TH2F("hMassGamElecPosi","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
 
   const int idChic0        =  10441;
   const int idChic1        =  20443;
@@ -171,7 +173,9 @@ int main(int argc, char* argv[]) {
   for (int iEvent = 0; iEvent < nEvents; ++iEvent) {
     if (!pythia.next()) continue;
 
-    // Find number of all final charged particles and pi0's
+    // Loop over all particles in the generated event
+    double px,py,pz,p0;
+    
     for (int i = 0; i < pythia.event.size(); ++i) {
       // Select final-state chi_c2 within |y|<0.5
       if (pythia.event[i].id() == idChic2 &&
@@ -199,11 +203,14 @@ int main(int argc, char* argv[]) {
 	if ( pythia.event[dghtChi1].id() == idJpsi    &&
 	     pythia.event[dghtChi2].id() == idPhoton)  {
 
+	  px = pythia.event[dghtChi2].px();
+	  py = pythia.event[dghtChi2].py();
+	  pz = pythia.event[dghtChi2].pz();
+	  p0 = pythia.event[dghtChi2].e();
+	  TLorentzVector pGam(px,py,pz,p0);
+	  
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
-	 
-	 
-
 
 	  // skip event if the number of J/psi daughters is not 2
 	  if (dghtJ2 - dghtJ1 != 1) continue;
@@ -219,8 +226,24 @@ int main(int argc, char* argv[]) {
 	      abs(pythia.event[dghtJ2].id()) == idElectron) {
               
 	    if (pythia.event[dghtJ1].id() == idElectron)  {
-		Double_t pt_positron = pythia.event[dghtJ2].pT();
-                Double_t pt_electron = pythia.event[dghtJ1].pT();
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+	        TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+		
+	        Double_t pt_positron = pythia.event[dghtJ2].pT();
+	        Double_t pt_electron = pythia.event[dghtJ1].pT();
 
                 Double_t eta_positron = pythia.event[dghtJ2].eta();
                 Double_t eta_electron = pythia.event[dghtJ1].eta();
@@ -623,7 +646,7 @@ int main(int argc, char* argv[]) {
   hPositron_pt_all        ->Write();
   hPositron_chic0_pt_all  ->Write();
   hPositron_chic1_pt_all  ->Write();
-
+  hMassGamElecPosi        ->Write();
  
   outFile->Close();
   delete outFile;
