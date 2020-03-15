@@ -285,6 +285,25 @@ int main(int argc, char* argv[]) {
  
 
 	     if (pythia.event[dghtJ2].id() == idElectron)  {
+
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+		TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+
+
+
 	        Double_t pt_positron =pythia.event[dghtJ1].pT();
                 Double_t pt_electron = pythia.event[dghtJ2].pT();
        
@@ -348,6 +367,12 @@ int main(int argc, char* argv[]) {
 	if ( pythia.event[dghtChi1].id() == idJpsi    &&
 	     pythia.event[dghtChi2].id() == idPhoton)  {
 
+	  px = pythia.event[dghtChi2].px();
+	  py = pythia.event[dghtChi2].py();
+	  pz = pythia.event[dghtChi2].pz();
+	  p0 = pythia.event[dghtChi2].e();
+	  TLorentzVector pGam(px,py,pz,p0);
+
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
 
@@ -366,12 +391,29 @@ int main(int argc, char* argv[]) {
 	      abs(pythia.event[dghtJ2].id()) == idElectron) {
               
 	    if (pythia.event[dghtJ1].id() == idElectron)  {
+
+
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+	        TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+		
 		Double_t pt_positron = pythia.event[dghtJ2].pT();
                 Double_t pt_electron = pythia.event[dghtJ1].pT();
 
                 Double_t eta_positron = pythia.event[dghtJ2].eta();
                 Double_t eta_electron = pythia.event[dghtJ1].eta();
-                
 
 		hPositron_chic0_pt_all->Fill(pt_positron);
 	        hElectron_chic0_pt_all->Fill(pt_electron);
@@ -408,11 +450,29 @@ int main(int argc, char* argv[]) {
 
 
 		 if (pythia.event[dghtJ2].id() == idElectron)  {
+
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+	        TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+
 	        Double_t pt_positron =pythia.event[dghtJ1].pT();
                 Double_t pt_electron = pythia.event[dghtJ2].pT();
        
                 Double_t eta_positron = pythia.event[dghtJ1].eta();
                 Double_t eta_electron = pythia.event[dghtJ2].eta();
+
 
 	        hPositron_pt_all->Fill(pt_positron);
 		hElectron_pt_all->Fill(pt_electron);
@@ -471,6 +531,12 @@ int main(int argc, char* argv[]) {
 	if ( pythia.event[dghtChi1].id() == idJpsi    &&
 	     pythia.event[dghtChi2].id() == idPhoton)  {
 
+	  px = pythia.event[dghtChi2].px();
+	  py = pythia.event[dghtChi2].py();
+	  pz = pythia.event[dghtChi2].pz();
+	  p0 = pythia.event[dghtChi2].e();
+	  TLorentzVector pGam(px,py,pz,p0);
+
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
 
@@ -489,6 +555,23 @@ int main(int argc, char* argv[]) {
 	      abs(pythia.event[dghtJ2].id()) == idElectron) {
               
 	    if (pythia.event[dghtJ1].id() == idElectron)  {
+
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+	        TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+
 		Double_t pt_positron = pythia.event[dghtJ2].pT();
                 Double_t pt_electron = pythia.event[dghtJ1].pT();
 
@@ -531,6 +614,23 @@ int main(int argc, char* argv[]) {
 
 
 		 if (pythia.event[dghtJ2].id() == idElectron)  {
+
+	        px = pythia.event[dghtJ1].px();
+	        py = pythia.event[dghtJ1].py();
+	        pz = pythia.event[dghtJ1].pz();
+	        p0 = pythia.event[dghtJ1].e();
+	        TLorentzVector pElec(px,py,pz,p0);
+
+	        px = pythia.event[dghtJ2].px();
+	        py = pythia.event[dghtJ2].py();
+	        pz = pythia.event[dghtJ2].pz();
+	        p0 = pythia.event[dghtJ2].e();
+	        TLorentzVector pPosi(px,py,pz,p0);
+
+		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
+		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
+
 	        Double_t pt_positron =pythia.event[dghtJ1].pT();
                 Double_t pt_electron = pythia.event[dghtJ2].pT();
        
