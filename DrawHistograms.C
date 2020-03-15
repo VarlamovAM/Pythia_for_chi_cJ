@@ -2,7 +2,7 @@ DrawHistograms()
 
 {
 
-  TFile *file = new TFile("pythia_chi_c0_c1_c2.root","old");
+  TFile *file = new TFile("pythia_chic2.root","old");
   TH1F *hChiC2_pt_all            = (TH1F*)file->Get("hChiC2_pt_all");
   TH1F *hChiC0_pt_all            = (TH1F*)file->Get("hChiC0_pt_all");
   TH1F *hChiC1_pt_all            = (TH1F*)file->Get("hChiC1_pt_all");
