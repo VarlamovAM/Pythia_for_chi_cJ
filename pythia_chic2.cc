@@ -35,7 +35,6 @@
 
 
 
-
 using namespace Pythia8;
 
 int main(int argc, char* argv[]) {
@@ -55,6 +54,8 @@ int main(int argc, char* argv[]) {
 
   Pythia pythia;
 
+  
+
   // randon seed
   TRandom rndm;
   rndm.SetSeed(0);
@@ -63,13 +64,12 @@ int main(int argc, char* argv[]) {
   sprintf(processLine, "Random:Seed = %d",pythiaSeed);
 
   pythia.readString("Random:setSeed = on");
-  pythia.readString(processLine); 
+    pythia.readString(processLine); 
 
   // Set process type and collision energy
-  pythia.readString("Onia:all(3PJ) = on");
+  pythia.readString("Charmonium:all  = on");;
   pythia.readString("Beams:eCM = 13000.");
   pythia.init();
-
   double ptMin = 0.;
   double ptMax = 50.;  //GeV
   double yMin  = 0.; 
@@ -165,6 +165,18 @@ int main(int argc, char* argv[]) {
   const int idPositron     = -11;
   const int idPhoton       =  22;
 
+
+  
+
+  // block of constants to Gauss distribution
+  
+  double a_gam_energy = 0.04;
+  double b_gam_energy = 0.036;
+  double c_gam_energy = 0.01;
+
+  double a_el_pos_momentum = 0.01;
+  double b_el_pos_momentum = 0.001;
+
   int nEvent2Print = 10;
 
   // Begin event loop. Generate event
@@ -174,7 +186,7 @@ int main(int argc, char* argv[]) {
     if (!pythia.next()) continue;
 
     // Loop over all particles in the generated event
-    double px,py,pz,p0;
+    double px,py,pz,p0,sigma_p0;
     
     for (int i = 0; i < pythia.event.size(); ++i) {
       // Select final-state chi_c2 within |y|<0.5
@@ -207,7 +219,14 @@ int main(int argc, char* argv[]) {
 	  py = pythia.event[dghtChi2].py();
 	  pz = pythia.event[dghtChi2].pz();
 	  p0 = pythia.event[dghtChi2].e();
-	  TLorentzVector pGam(px,py,pz,p0);
+
+	  sigma_p0 = p0 * sqrt(( a_gam_energy * a_gam_energy)/(p0 * p0) + (b_gam_energy*b_gam_energy)/(p0) + (c_gam_energy * c_gam_energy));
+	  
+	  double p0_rand;
+
+	  p0_rand = rndm.Gaus(p0,sigma_p0);
+	  
+	  TLorentzVector pGam(px,py,pz,p0_rand);
 	  
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -230,13 +249,44 @@ int main(int argc, char* argv[]) {
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-	        TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
@@ -286,17 +336,48 @@ int main(int argc, char* argv[]) {
 
 	     if (pythia.event[dghtJ2].id() == idElectron)  {
 
-	        px = pythia.event[dghtJ1].px();
+	       px = pythia.event[dghtJ1].px();
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-		TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
@@ -371,7 +452,14 @@ int main(int argc, char* argv[]) {
 	  py = pythia.event[dghtChi2].py();
 	  pz = pythia.event[dghtChi2].pz();
 	  p0 = pythia.event[dghtChi2].e();
-	  TLorentzVector pGam(px,py,pz,p0);
+
+	  sigma_p0 = p0 * sqrt(( a_gam_energy * a_gam_energy)/(p0 * p0) + (b_gam_energy*b_gam_energy)/(p0) + (c_gam_energy * c_gam_energy));
+	  
+	  double p0_rand;
+
+	  p0_rand = rndm.Gaus(p0,sigma_p0);
+	  
+	  TLorentzVector pGam(px,py,pz,p0_rand);
 
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -397,13 +485,44 @@ int main(int argc, char* argv[]) {
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-	        TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
@@ -451,17 +570,48 @@ int main(int argc, char* argv[]) {
 
 		 if (pythia.event[dghtJ2].id() == idElectron)  {
 
-	        px = pythia.event[dghtJ1].px();
+		px = pythia.event[dghtJ1].px();
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-	        TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
@@ -520,14 +670,14 @@ int main(int argc, char* argv[]) {
 
 
 
-	// Find daughters of chi_c0
+	// Find daughters of chi_c1
 	int dghtChi1 = pythia.event[i].daughter1(); // first daughter
 	int dghtChi2 = pythia.event[i].daughter2(); // last  daughter
 
 	// skip event if the number of chi_c0 daughters is not 2
 	if (dghtChi2 - dghtChi1 != 1) continue;
 
-	// select decay chi_c0 -> J/psi gamma
+	// select decay chi_c1 -> J/psi gamma
 	if ( pythia.event[dghtChi1].id() == idJpsi    &&
 	     pythia.event[dghtChi2].id() == idPhoton)  {
 
@@ -535,7 +685,14 @@ int main(int argc, char* argv[]) {
 	  py = pythia.event[dghtChi2].py();
 	  pz = pythia.event[dghtChi2].pz();
 	  p0 = pythia.event[dghtChi2].e();
-	  TLorentzVector pGam(px,py,pz,p0);
+
+	  sigma_p0 = p0 * sqrt(( a_gam_energy * a_gam_energy)/(p0 * p0) + (b_gam_energy*b_gam_energy)/(p0) + (c_gam_energy * c_gam_energy)); 
+	  
+	  double p0_rand;
+
+	  p0_rand = rndm.Gaus(p0,sigma_p0);
+	  
+	  TLorentzVector pGam(px,py,pz,p0_rand);
 
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -560,13 +717,44 @@ int main(int argc, char* argv[]) {
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-	        TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
@@ -619,13 +807,44 @@ int main(int argc, char* argv[]) {
 	        py = pythia.event[dghtJ1].py();
 	        pz = pythia.event[dghtJ1].pz();
 	        p0 = pythia.event[dghtJ1].e();
-	        TLorentzVector pElec(px,py,pz,p0);
 
+		double sigma_p_elec;
+		
+		double px_rand, py_rand, pz_rand;
+
+		//define sigma for Gauss to electron
+
+		sigma_p_elec = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pElec(px_rand,py_rand,pz_rand,p0);
+
+		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
 	        pz = pythia.event[dghtJ2].pz();
 	        p0 = pythia.event[dghtJ2].e();
-	        TLorentzVector pPosi(px,py,pz,p0);
+
+		double sigma_p_posi;
+		
+		//define sigma for Gauss to positron
+
+		sigma_p_posi = sqrt((px * px) + (py * py) + (pz * pz)) * sqrt(a_el_pos_momentum * a_el_pos_momentum + (b_el_pos_momentum * b_el_pos_momentum) * sqrt((px * px) + (py * py) + (pz * pz)));
+
+		//define random momentum
+
+		px_rand = rndm.Gaus(px,sigma_p_elec);
+		py_rand = rndm.Gaus(py,sigma_p_elec);
+		pz_rand = rndm.Gaus(pz,sigma_p_elec);
+
+
+	        TLorentzVector pPosi(px_rand,py_rand,pz_rand,p0);
 
 		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
 		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
