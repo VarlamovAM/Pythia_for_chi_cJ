@@ -69,7 +69,22 @@ int main(int argc, char* argv[]) {
   // Set process type and collision energy
   pythia.readString("Charmonium:all  = on");;
   pythia.readString("Beams:eCM = 13000.");
+
+  // Switch off all J/psi decays but J/psi -> e+ e-
+  pythia.readString("443:onMode = off");
+  pythia.readString("443:onIfAny = 11 -11");
+
+  // Switch off all chi_c2 decays but chi_c2 -> J/psi gamma
+  pythia.readString("445:onMode = off");
+  pythia.readString("445:onIfAny = 443 22");
+
   pythia.init();
+
+  cout << "List all decays of particle 10443, 20443, 445\n";
+  pythia.particleData.list(10443);
+  pythia.particleData.list(20443);
+  pythia.particleData.list(445);
+
   double ptMin = 0.;
   double ptMax = 50.;  //GeV
   double yMin  = 0.; 
