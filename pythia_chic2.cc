@@ -33,8 +33,6 @@
 
 #include "TLorentzVector.h"
 
-
-
 using namespace Pythia8;
 
 int main(int argc, char* argv[]) {
