@@ -50,7 +50,6 @@ TLorentzVector resolutionPhoton(TLorentzVector pTrue){
   // Get particle mass
   Double_t Mass = pTrue.M();
   Double_t Etrue = pTrue.E();
-  cout << Mass << endl;
   // Get true energy from true 4-momentum and smear this energy
   Double_t Esmeared = smearE(pTrue.E());
   // Calculate true absolute 3-momentum
@@ -66,38 +65,21 @@ TLorentzVector resolutionPhoton(TLorentzVector pTrue){
   return pSmeared;
 }
 
-Double_t smearP(Double_t Ptrue){
-  TRandom rndm;
-  // Generate smeared track 3-momentum from the true 3-momentum
-  const Double_t a=0.01, b=0.001;
-  Double_t sigmaP = Ptrue * sqrt(a*a + b*Ptrue*b*Ptrue);
-  Double_t Psmeared = rndm.Gaus(Ptrue,sigmaP);
-  if (Psmeared<0) Psmeared = 0;
-  
-  if (Psmeared = 0){
-    cout << "error_1" << endl;
-  }
-  
-  return Psmeared;
-}
 
 TLorentzVector resolutionElectron(TLorentzVector pTrue){
   TRandom rndm;
+  const Double_t a=0.01, b=0.001;
   // Get particle mass
   Double_t Mass = pTrue.M();
   // Get true absolute 3-momentum from true 4-momentum
   Double_t p3True = pTrue.P();
   // Generated smeared absolute 3-momentum
-  Double_t p3Smeared = smearP(p3True);
+  Double_t sigmaP = p3True * sqrt(a*a + b*p3True*b*p3True);
+  Double_t p3Smeared = rndm.Gaus(p3True,sigmaP);
   // Calculate smeared components of 3-vector
   Double_t pxSmeared = pTrue.Px() * p3Smeared/p3True;
   Double_t pySmeared = pTrue.Py() * p3Smeared/p3True;
   Double_t pzSmeared = pTrue.Pz() * p3Smeared/p3True;
-
-  if (pxSmeared == 0 &&  pxSmeared == 0 && pxSmeared == 0){
-  cout << "error_2" << endl;
-  }
-
   // Calculate new energy from smeared 3-momentum and mass
   Double_t Esmeared = sqrt(p3Smeared*p3Smeared + Mass*Mass);
   // Construct new 4-momentum from smeared energy and 3-momentum
@@ -257,16 +239,6 @@ int main(int argc, char* argv[]) {
   const int idPhoton       =  22;
 
 
-  
-
-  // block of constants to Gauss distribution
-  
-  double a_gam_energy = 0.04;
-  double b_gam_energy = 0.036;
-  double c_gam_energy = 0.01;
-
-  double a_el_pos_momentum = 0.01;
-  double b_el_pos_momentum = 0.001;
 
   int nEvent2Print = 10;
 
@@ -312,6 +284,8 @@ int main(int argc, char* argv[]) {
 	  p0 = pythia.event[dghtChi2].e();
 
 	  TLorentzVector pGam(px,py,pz,p0);
+	 
+	  TLorentzVector pGam_smeared = resolutionPhoton(pGam);
 	  
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -337,7 +311,8 @@ int main(int argc, char* argv[]) {
 
 	
 		TLorentzVector pElec(px,py,pz,p0);
-
+		
+		TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
@@ -347,10 +322,11 @@ int main(int argc, char* argv[]) {
 
 	        TLorentzVector pPosi(px,py,pz,p0);
 
+		TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
 
 
-		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+		Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 		
 	        Double_t pt_positron = pythia.event[dghtJ2].pT();
@@ -404,6 +380,7 @@ int main(int argc, char* argv[]) {
 	
 	       TLorentzVector pElec(px,py,pz,p0);
 
+	       TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		
 	       px = pythia.event[dghtJ2].px();
 	       py = pythia.event[dghtJ2].py();
@@ -413,8 +390,10 @@ int main(int argc, char* argv[]) {
 
 	       TLorentzVector pPosi(px,py,pz,p0);
 
-	       Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-	       Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+	       TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
+
+	       Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+	       Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 	       hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 	       
 
@@ -488,6 +467,8 @@ int main(int argc, char* argv[]) {
 	  p0 = pythia.event[dghtChi2].e();
 	  
 	  TLorentzVector pGam(px,py,pz,p0);
+	  
+	  TLorentzVector pGam_smeared = resolutionPhoton(pGam);
 
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -515,6 +496,7 @@ int main(int argc, char* argv[]) {
 	
 		TLorentzVector pElec(px,py,pz,p0);
 
+		TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
@@ -523,11 +505,12 @@ int main(int argc, char* argv[]) {
 
 
 	        TLorentzVector pPosi(px,py,pz,p0);
-	        
+
+		TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
 
 
-		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+		Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 		
 		Double_t pt_positron = pythia.event[dghtJ2].pT();
@@ -579,6 +562,7 @@ int main(int argc, char* argv[]) {
 		   
 		   TLorentzVector pElec(px,py,pz,p0);
 
+		   TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		
 		   px = pythia.event[dghtJ2].px();
 		   py = pythia.event[dghtJ2].py();
@@ -587,9 +571,11 @@ int main(int argc, char* argv[]) {
 		   
 		   
 		   TLorentzVector pPosi(px,py,pz,p0);
+
+		   TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
 		   
-		   Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-		   Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		   Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+		   Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 		   hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 		   
 		   Double_t pt_positron =pythia.event[dghtJ1].pT();
@@ -662,6 +648,8 @@ int main(int argc, char* argv[]) {
 	  p0 = pythia.event[dghtChi2].e();
 	  
 	  TLorentzVector pGam(px,py,pz,p0);
+	  
+	  TLorentzVector pGam_smeared = resolutionPhoton(pGam);
 
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
@@ -690,6 +678,7 @@ int main(int argc, char* argv[]) {
 	
 		TLorentzVector pElec(px,py,pz,p0);
 
+		TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		
 	        px = pythia.event[dghtJ2].px();
 	        py = pythia.event[dghtJ2].py();
@@ -699,8 +688,10 @@ int main(int argc, char* argv[]) {
 
 	        TLorentzVector pPosi(px,py,pz,p0);
 
-		Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-		Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
+
+		Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+		Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 		hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 
 		Double_t pt_positron = pythia.event[dghtJ2].pT();
@@ -751,21 +742,23 @@ int main(int argc, char* argv[]) {
 		   pz = pythia.event[dghtJ1].pz();
 		   p0 = pythia.event[dghtJ1].e();
 		   
-		   
+	
 		   TLorentzVector pElec(px,py,pz,p0);
 		   
+		   TLorentzVector pElec_smeared = resolutionElectron(pElec);
 		   
 		   px = pythia.event[dghtJ2].px();
 		   py = pythia.event[dghtJ2].py();
 		   pz = pythia.event[dghtJ2].pz();
 		   p0 = pythia.event[dghtJ2].e();
 		   
-		   
+
 		   TLorentzVector pPosi(px,py,pz,p0);
-		  
 		   
-		   Double_t massGamElecPosi = (pGam + pElec + pPosi).M();
-		   Double_t ptGamElecPosi   = (pGam + pElec + pPosi).Pt();
+		   TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
+		   
+		   Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
+		   Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
 		   hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
 		   
 		   Double_t pt_positron =pythia.event[dghtJ1].pT();
