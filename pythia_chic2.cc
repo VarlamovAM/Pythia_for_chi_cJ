@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
 
   
 
-  // randon seed
+  // random seed
   TRandom rndm;
   rndm.SetSeed(0);
   int pythiaSeed = rndm.Integer(1000000);
