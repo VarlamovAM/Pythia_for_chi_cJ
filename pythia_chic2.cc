@@ -65,6 +65,16 @@ TLorentzVector resolutionPhoton(TLorentzVector pTrue){
   return pSmeared;
 }
 
+Double_t smearP(Double_t Ptrue){
+  TRandom rndm;
+  // Generate smeared track 3-momentum from the true 3-momentum
+  const Double_t a=0.01, b=0.001;
+  Double_t sigmaP = Ptrue * sqrt(a*a + b*Ptrue*b*Ptrue);
+  Double_t Psmeared = rndm.Gaus(Ptrue,sigmaP);
+  if (Psmeared<0) Psmeared = 0;
+  return Psmeared;
+}
+
 
 TLorentzVector resolutionElectron(TLorentzVector pTrue){
   TRandom rndm;
@@ -74,8 +84,7 @@ TLorentzVector resolutionElectron(TLorentzVector pTrue){
   // Get true absolute 3-momentum from true 4-momentum
   Double_t p3True = pTrue.P();
   // Generated smeared absolute 3-momentum
-  Double_t sigmaP = p3True * sqrt(a*a + b*p3True*b*p3True);
-  Double_t p3Smeared = rndm.Gaus(p3True,sigmaP);
+  Double_t p3Smeared = smearP(p3True);
   // Calculate smeared components of 3-vector
   Double_t pxSmeared = pTrue.Px() * p3Smeared/p3True;
   Double_t pySmeared = pTrue.Py() * p3Smeared/p3True;
