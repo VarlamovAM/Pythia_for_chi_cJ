@@ -15,6 +15,7 @@ STATICLIB    := $(PYTHIA8)/lib/archive/libpythia8.a
 SHAREDLIB    := $(PYTHIA8)/lib/libpythia8210.$(SHAREDSUFFIX)
 DICTCXXFLAGS := -I$(HOME)/chi_c2/PYTHIA8/pythia8210/include
 ROOTCXXFLAGS := $(DICTCXXFLAGS) $(shell root-config --cflags)
+CXXFLAGS     := -Wall
 
 # Libraries to include if GZIP support is enabled
 ifeq (x$(ENABLEGZIP),xyes)
@@ -27,12 +28,18 @@ LDFLAGS1 := $(shell root-config --ldflags --glibs) \
 LDFLAGS2 := $(shell root-config --ldflags --glibs) \
   -L$(PYTHIA8)/lib -lpythia8210 -llhapdf $(LIBGZIP)
 
+FILES_SRC =   pythia_chic2.cc smearE.cc smearP.cc resolutionPhoton.cc resolutionElectron.cc
+FILES_OBJ =  $(FILES_SRC:%.cc=%.o)
+
 # Default target; make examples (but not shared dictionary)
 all: $(EX)
 
 # Rule to build hist example. Needs static PYTHIA 8 library
-pythia_chic2: $(SHAREDLIB) pythia_chic2.cc
-	$(CXX) $(ROOTCXXFLAGS) $@.cc -o $@.exe $(LDFLAGS1)
+$(EX): $(SHAREDLIB) $(FILES_OBJ)
+	$(CXX) $(ROOTCXXFLAGS) $(FILES_OBJ) -o $@.exe $(LDFLAGS1)
+
+%.o: %.cc
+	$(CXX) -o $@ -c $< $(CXXFLAGS) $(ROOTCXXFLAGS) 
 
 # Rule to build full dictionary
 dict: $(SHAREDLIB)
@@ -54,5 +61,4 @@ $(SHAREDLIB):
 
 # Clean up
 clean:
-	rm -f $(EXE) pythia_chic2.root pythiaDict.*
-
+	rm -f $(EXE) $(FILES_OBJ) pythia_chic2.root pythiaDict.*
