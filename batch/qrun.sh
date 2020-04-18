@@ -18,5 +18,5 @@ cd $WDIR
 echo "Current directory: "`pwd`", hostname "`hostname`
 rm -rf *
 export PYTHIA8DATA=$ALICE_ROOT/PYTHIA8/pythia8210/xmldoc
-time ../../pythia_chic2.exe 10000 >& pythia_chic2.log
+time .././pythia_chic2.exe 10000000 >& pythia_chic2.log
 ls -al
