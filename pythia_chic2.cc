@@ -87,6 +87,8 @@ int main(int argc, char* argv[]) {
   pythia.readString("20443:onMode = off");
   pythia.readString("20443:onIfAny = 443 22");
 
+  pythia.readString("PhaseSpace:pTHatMin = 7.");
+
   pythia.init();
 
   cout << "List all decays of particle 10441, 20443, 445\n";
@@ -183,6 +185,8 @@ int main(int argc, char* argv[]) {
 
   TH2F *hMassElecPosi = new TH2F("hMassElecPosi","M(e^{+}e^{-}) vs p_{T}",200.,2.6,3.6,50,0.,50.);
   TH2F *hMassGamElecPosi = new TH2F("hMassGamElecPosi","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
+  TH2F *hMassGamElecPosi_cndtn_1 = new TH2F("hMassGamElecPosi_cndtn_1","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
+  TH2F *hMassGamElecPosi_cndtn_2 = new TH2F("hMassGamElecPosi_cndtn_2","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
 
   const int idChic0        =  10441;
   const int idChic1        =  20443;
@@ -312,6 +316,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -327,6 +333,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -375,27 +383,31 @@ int main(int argc, char* argv[]) {
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0)   
+		  pt_gamma          > 1.0) 
 		 
-		{ 
-		   
+		{  
+		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		   
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
+
 		}
-	       
+
+
 	      if (abs(eta_positron) < 0.8  &&
 		  abs(eta_electron) < 0.8  &&
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)
-
-		 
+		  pt_gamma          > 5.0)  
+		  
 		{ 
-		   
+		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -498,10 +510,13 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC0_pt_cndtn_1 ->Fill(pt);
-		  hChiC0_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
+
 
 	      if (abs(eta_positron) < 0.8  &&
 		  abs(eta_electron) < 0.8  &&
@@ -512,8 +527,10 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC0_pt_cndtn_2 ->Fill(pt);
-		  hChiC0_y_cndtn_2  ->Fill(y);
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -564,28 +581,32 @@ int main(int argc, char* argv[]) {
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0)   
-		     
-		{ 
-		       
-		  hChiC0_pt_cndtn_1 ->Fill(pt);
-		  hChiC0_y_cndtn_1  ->Fill(y);
-		       
+		  pt_gamma          > 1.0) 
+		 
+		{  
+		  
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
+
 		}
-		   
+
+
 	      if (abs(eta_positron) < 0.8  &&
 		  abs(eta_electron) < 0.8  &&
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)
-		     
-		     
+		  pt_gamma          > 5.0)  
+		  
 		{ 
-		       
-		  hChiC0_pt_cndtn_2 ->Fill(pt);
-		  hChiC0_y_cndtn_2  ->Fill(y);
-		       
+		  
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
+
 		}
 	    }
 	  }
@@ -688,10 +709,13 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC1_pt_cndtn_1 ->Fill(pt);
-		  hChiC1_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
+
 
 	      if (abs(eta_positron) < 0.8  &&
 		  abs(eta_electron) < 0.8  &&
@@ -702,11 +726,12 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC1_pt_cndtn_2 ->Fill(pt);
-		  hChiC1_y_cndtn_2  ->Fill(y);
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
 		}
-
 	    }
 
 
@@ -754,28 +779,32 @@ int main(int argc, char* argv[]) {
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0)   
+		  pt_gamma          > 1.0) 
+		 
+		{  
+		  
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
 
-		{ 
-		    
-		  hChiC1_pt_cndtn_1 ->Fill(pt);
-		  hChiC1_y_cndtn_1  ->Fill(y);
-		       
 		}
-		   
+
+
 	      if (abs(eta_positron) < 0.8  &&
 		  abs(eta_electron) < 0.8  &&
 		  abs(eta_gamma)    < 0.12 &&
 		  pt_electron       > 0.5  &&
 		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)
-
-
+		  pt_gamma          > 5.0)  
+		  
 		{ 
 		  
-		  hChiC1_pt_cndtn_2 ->Fill(pt);
-		  hChiC1_y_cndtn_2  ->Fill(y);
-		       
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
+					      (pElec_smeared + pPosi_smeared).Pt());
+
 		}
 	    }
 	  }
@@ -888,6 +917,8 @@ int main(int argc, char* argv[]) {
   hMass2Gamma             ->Write();
   hMassElecPosi           ->Write();
   hMassGamElecPosi        ->Write();
+  hMassGamElecPosi_cndtn_1->Write();
+  hMassGamElecPosi_cndtn_2->Write();
  
   outFile->Close();
   delete outFile;
