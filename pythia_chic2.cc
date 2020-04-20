@@ -316,8 +316,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -333,8 +333,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 	    }
@@ -389,8 +389,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -406,8 +406,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 	    }
@@ -512,8 +512,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -529,8 +529,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -587,8 +587,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -711,8 +711,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -728,8 +728,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 	    }
@@ -785,8 +785,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 
@@ -802,8 +802,8 @@ int main(int argc, char* argv[]) {
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared).M(),
-					      (pElec_smeared + pPosi_smeared).Pt());
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
 
 		}
 	    }
