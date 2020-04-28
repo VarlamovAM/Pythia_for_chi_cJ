@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
   pythia.readString("20443:onMode = off");
   pythia.readString("20443:onIfAny = 443 22");
 
-  pythia.readString("PhaseSpace:pTHatMin = 7.");
+  //pythia.readString("PhaseSpace:pTHatMin = 7.");
 
   pythia.init();
 
@@ -187,6 +187,10 @@ int main(int argc, char* argv[]) {
   TH2F *hMassGamElecPosi = new TH2F("hMassGamElecPosi","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
   TH2F *hMassGamElecPosi_cndtn_1 = new TH2F("hMassGamElecPosi_cndtn_1","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
   TH2F *hMassGamElecPosi_cndtn_2 = new TH2F("hMassGamElecPosi_cndtn_2","M(#gamma e^{+}e^{-}) vs p_{T}",200.,3.,4.,50,0.,50.);
+  TH2F *hMassGamElecPosi_mass_diff = new TH2F("hMassGamElecPosi_mass_diff","M(#gamma e^{+}e^{-}) vs p_{T}",160.,0.,0.8,50,0.,50.);
+  TH2F *hMassGamElecPosi_mass_diff_cndtn_1 = new TH2F("hMassGamElecPosi_mass_diff_cndtn_1","M(#gamma e^{+}e^{-}) vs p_{T}",160.,0.,0.8,50,0.,50.);
+  TH2F *hMassGamElecPosi_mass_diff_cndtn_2 = new TH2F("hMassGamElecPosi_mass_diff_cndtn_2","M(#gamma e^{+}e^{-}) vs p_{T}",160.,0.,0.8,50,0.,50.);
+
 
   const int idChic0        =  10441;
   const int idChic1        =  20443;
@@ -293,6 +297,10 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
+
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 		
 	      Double_t pt_positron = pythia.event[dghtJ2].pT();
 	      Double_t pt_electron = pythia.event[dghtJ1].pT();
@@ -318,6 +326,8 @@ int main(int argc, char* argv[]) {
 		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -335,6 +345,8 @@ int main(int argc, char* argv[]) {
 		  hChiC2_y_cndtn_2  ->Fill(y);
 		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -368,7 +380,11 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
-	       
+	      
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+ 
 	      Double_t pt_positron =pythia.event[dghtJ1].pT();
 	      Double_t pt_electron = pythia.event[dghtJ2].pT();
 	       
@@ -390,7 +406,9 @@ int main(int argc, char* argv[]) {
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -408,6 +426,8 @@ int main(int argc, char* argv[]) {
 		  hChiC2_y_cndtn_2  ->Fill(y);
 		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -491,7 +511,11 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
-		
+	
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	      
 	      Double_t pt_positron = pythia.event[dghtJ2].pT();
 	      Double_t pt_electron = pythia.event[dghtJ1].pT();
 
@@ -510,10 +534,12 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC0_pt_cndtn_1 ->Fill(pt);
-		  hChiC0_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -527,10 +553,12 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC0_pt_cndtn_2 ->Fill(pt);
-		  hChiC0_y_cndtn_2  ->Fill(y);
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
 		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -565,7 +593,11 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
-		   
+		
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	     	   
 	      Double_t pt_positron =pythia.event[dghtJ1].pT();
 	      Double_t pt_electron = pythia.event[dghtJ2].pT();
 		   
@@ -585,10 +617,12 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC0_pt_cndtn_1 ->Fill(pt);
-		  hChiC0_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -602,10 +636,13 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC0_pt_cndtn_2 ->Fill(pt);
-		  hChiC0_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
+		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+
 		}
 	    }
 	  }
@@ -688,7 +725,11 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
-
+	
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	      
 	      Double_t pt_positron = pythia.event[dghtJ2].pT();
 	      Double_t pt_electron = pythia.event[dghtJ1].pT();
 
@@ -708,10 +749,12 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC1_pt_cndtn_1 ->Fill(pt);
-		  hChiC1_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -725,10 +768,12 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC1_pt_cndtn_2 ->Fill(pt);
-		  hChiC1_y_cndtn_2  ->Fill(y);
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
 		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -763,7 +808,11 @@ int main(int argc, char* argv[]) {
 	      // Fill invariant mass of momentum sum (e+ e-)
 	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
 				  (pElec_smeared + pPosi_smeared).Pt());
-		   
+		
+	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
+	      hMassGamElecPosi_mass_diff->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	      	   
 	      Double_t pt_positron =pythia.event[dghtJ1].pT();
 	      Double_t pt_electron = pythia.event[dghtJ2].pT();
 		   
@@ -782,10 +831,12 @@ int main(int argc, char* argv[]) {
 		 
 		{  
 		  
-		  hChiC1_pt_cndtn_1 ->Fill(pt);
-		  hChiC1_y_cndtn_1  ->Fill(y);
+		  hChiC2_pt_cndtn_1 ->Fill(pt);
+		  hChiC2_y_cndtn_1  ->Fill(y);
 		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_1->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
@@ -799,10 +850,12 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC1_pt_cndtn_2 ->Fill(pt);
-		  hChiC1_y_cndtn_2  ->Fill(y);
+		  hChiC2_pt_cndtn_2 ->Fill(pt);
+		  hChiC2_y_cndtn_2  ->Fill(y);
 		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
 						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
+		  hMassGamElecPosi_mass_diff_cndtn_2->Fill(((pGam_smeared + pElec_smeared + pPosi_smeared)-(pElec_smeared + pPosi_smeared)).M(),
+							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 	    }
@@ -889,35 +942,38 @@ int main(int argc, char* argv[]) {
   sprintf(fn, "%s", "pythia_chic2.root");
   TFile* outFile = new TFile(fn, "RECREATE");
  
-  hChiC2_pt_all           ->Write();
-  hChiC0_pt_all           ->Write();
-  hChiC1_pt_all           ->Write();
-  hChiC2_pt_cndtn_1       ->Write();
-  hChiC0_pt_cndtn_1       ->Write();
-  hChiC1_pt_cndtn_1       ->Write();
-  hChiC2_y_cndtn_1        ->Write();
-  hChiC0_y_cndtn_1        ->Write();
-  hChiC1_y_cndtn_1        ->Write();
-  hChiC2_pt_cndtn_2       ->Write();
-  hChiC0_pt_cndtn_2       ->Write();
-  hChiC1_pt_cndtn_2       ->Write();
-  hChiC2_y_cndtn_2        ->Write();
-  hChiC0_y_cndtn_2        ->Write();
-  hChiC1_y_cndtn_2        ->Write();
-  hGamma_pt_all           ->Write();
-  hGamma_chic0_pt_all     ->Write();
-  hGamma_chic1_pt_all     ->Write();
-  hElectron_pt_all        ->Write();
-  hElectron_chic0_pt_all  ->Write();
-  hElectron_chic1_pt_all  ->Write();
-  hPositron_pt_all        ->Write();
-  hPositron_chic0_pt_all  ->Write();
-  hPositron_chic1_pt_all  ->Write();
-  hMass2Gamma             ->Write();
-  hMassElecPosi           ->Write();
-  hMassGamElecPosi        ->Write();
-  hMassGamElecPosi_cndtn_1->Write();
-  hMassGamElecPosi_cndtn_2->Write();
+  hChiC2_pt_all                     ->Write();
+  hChiC0_pt_all                     ->Write();
+  hChiC1_pt_all                     ->Write();
+  hChiC2_pt_cndtn_1                 ->Write();
+  hChiC0_pt_cndtn_1                 ->Write();
+  hChiC1_pt_cndtn_1                 ->Write();
+  hChiC2_y_cndtn_1                  ->Write();
+  hChiC0_y_cndtn_1                  ->Write();
+  hChiC1_y_cndtn_1                  ->Write();
+  hChiC2_pt_cndtn_2                 ->Write();
+  hChiC0_pt_cndtn_2                 ->Write();
+  hChiC1_pt_cndtn_2                 ->Write();
+  hChiC2_y_cndtn_2                  ->Write();
+  hChiC0_y_cndtn_2                  ->Write();
+  hChiC1_y_cndtn_2                  ->Write();
+  hGamma_pt_all                     ->Write();
+  hGamma_chic0_pt_all               ->Write();
+  hGamma_chic1_pt_all               ->Write();
+  hElectron_pt_all                  ->Write();
+  hElectron_chic0_pt_all            ->Write();
+  hElectron_chic1_pt_all            ->Write();
+  hPositron_pt_all                  ->Write();
+  hPositron_chic0_pt_all            ->Write();
+  hPositron_chic1_pt_all            ->Write();
+  hMass2Gamma                       ->Write();
+  hMassElecPosi                     ->Write();
+  hMassGamElecPosi                  ->Write();
+  hMassGamElecPosi_cndtn_1          ->Write();
+  hMassGamElecPosi_cndtn_2          ->Write();
+  hMassGamElecPosi_mass_diff        ->Write();
+  hMassGamElecPosi_mass_diff_cndtn_1->Write();
+  hMassGamElecPosi_mass_diff_cndtn_2->Write();
  
   outFile->Close();
   delete outFile;
