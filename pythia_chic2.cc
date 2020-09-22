@@ -38,6 +38,203 @@ using namespace Pythia8;
 TLorentzVector resolutionPhoton  (TLorentzVector);
 TLorentzVector resolutionElectron(TLorentzVector);
 
+void Init(Pythia* pythia){
+
+  TRandom rndm;
+
+  rndm.SetSeed(0);
+  int pythiaSeed = rndm.Integer(1000000);
+  char processLine[80];
+  sprintf(processLine, "Random:Seed = %d",pythiaSeed);
+
+  pythia->readString("Random:setSeed = on");
+  pythia->readString(processLine); 
+
+  //Set process type and collision energy
+  pythia->readString("Charmonium:all  = on");;
+  pythia->readString("Beams:eCM = 13000.");
+
+  // Switch off all J/psi decays but J/psi -> e+ e-
+  pythia->readString("443:onMode = off");
+  pythia->readString("443:onIfAny = 11 -11");
+
+  // Switch off all chi_c2 decays but chi_c2 -> J/psi gamma
+  pythia->readString("445:onMode = off");
+  pythia->readString("445:onIfAny = 443 22");
+
+  // Switch off all chi_c2 decays but chi_c0 -> J/psi gamma
+  pythia->readString("10441:onMode = off");
+  pythia->readString("10441:onIfAny = 443 22");
+
+  // Switch off all chi_c2 decays but chi_c1 -> J/psi gamma
+  pythia->readString("20443:onMode = off");
+  pythia->readString("20443:onIfAny = 443 22");
+
+  //pythia.readString("PhaseSpace:pTHatMin = 7.");
+
+  pythia->init();
+
+  cout << "Pythia was successfully initialized!\n";
+
+  return;
+}
+
+void Invariant_mass_spectr_creator(TLorentzVector p_el, TLorentzVector p_pos, TLorentzVector p_gam,
+				  TH2F *hMassElecPosi,
+				  TH2F *hMassGamElecPosi,
+				  TH2F *hMassGamElecPosi_cndtn_1,
+				  TH2F *hMassGamElecPosi_cndtn_2,
+				  TH2F *hMassGamElecPosi_mass_diff,
+				  TH2F *hMassGamElecPosi_mass_diff_cndtn_1,
+				  TH2F *hMassGamElecPosi_mass_diff_cndtn_2){
+
+  hMassGamElecPosi->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt());
+  hMassElecPosi->Fill((p_el + p_pos).M(), (p_el + p_pos).Pt());
+  hMassGamElecPosi_mass_diff->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(), 
+				   (p_el + p_pos + p_gam).Pt());
+
+  if (true){
+    hMassGamElecPosi_cndtn_1->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt());
+    hMassGamElecPosi_mass_diff_cndtn_1->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(),
+					     (p_el + p_pos + p_gam).Pt());
+  }
+
+  if (true){
+    hMassGamElecPosi_cndtn_2->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt());
+    hMassGamElecPosi_mass_diff_cndtn_2->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(), 
+					     (p_el + p_pos + p_gam).Pt());
+  }
+
+  return;
+  }
+
+
+bool IsPhotonDetectedInPHOS(TLorentzVector p){
+  bool flag = false;
+
+  double px = p.Px();
+  double py = p.Py();
+  double pz = p.Pz();
+  double p0 = p.E();
+
+  double y = 0.5*log((p0 + pz)/(p0 - pz));
+  double phi;
+  
+
+  if (px > 0. && py > 0.){
+    phi = atan(py/px);
+  }
+
+  if (px > 0. && py < 0.){
+    phi = atan(py/px);
+  }
+
+  if (px < 0. && py > 0.){
+    phi = TMath::Pi() + atan(py/px);
+  }
+
+  if (px < 0. && py < 0.){
+    phi = atan(py/px) - TMath::Pi();
+  }
+
+  if (px == 0. && py > 0.){
+    phi = TMath::Pi()/2;
+  }
+
+  if (px == 0. && py < 0.){
+    phi = -1 * TMath::Pi()/2;
+  }
+
+  if (fabs(y) < 0.12              &&
+      (phi > -11/9 * TMath::Pi()) && 
+      (phi < -4/9 * TMath::Pi())  &&
+      p0 > 1.0                    ){
+    flag = true;
+  }  
+  
+  return flag;
+}
+
+bool IsElectronDetectedInCTS(TLorentzVector p){
+
+  bool flag = false;
+
+  double px = p.Px();
+  double py = p.Py();
+  double pz = p.Pz();
+
+  double pT = sqrt(px*px + py*py);
+  double eta = 0.5*log((p.P() + pz)/(p.P() - pz));
+
+  if (fabs(eta) < 0.8 && 
+      pT >= 1.0 ){
+    flag = true;
+  }
+
+  return flag;
+}
+
+
+bool IsPhotonDetectedInEMCAL(TLorentzVector p){
+  
+  bool flag = false;
+
+  double px = p.Px();
+  double py = p.Py();
+  double pz = p.Pz();
+  double p0 = p.E();
+
+  double y = 0.5*log((p0 + pz)/(p0 - pz));
+
+  double phi;
+  
+
+  if (px > 0. && py > 0.){
+    phi = atan(py/px);
+  }
+
+  if (px > 0. && py < 0.){
+    phi = atan(py/px);
+  }
+
+  if (px < 0. && py > 0.){
+    phi = TMath::Pi() + atan(py/px);
+  }
+
+  if (px < 0. && py < 0.){
+    phi = atan(py/px) - TMath::Pi();
+  }
+
+  if (px == 0. && py > 0.){
+    phi = TMath::Pi()/2;
+  }
+
+  if (px == 0. && py < 0.){
+    phi = -1 * TMath::Pi()/2;
+  }
+
+  if (fabs(y) < 0.7                 &&
+      (phi > 87/90 * TMath::Pi())   && 
+      (phi < 107/90 * TMath::Pi())  &&
+      p0 > 2.5                        ){
+    flag = true;
+  }  
+  
+  return flag;
+}
+
+bool IsTriggeredByPHOS(TLorentzVector p, double eTrigger){
+  bool flag = false;
+
+  if (p.E() >= eTrigger){
+    flag = true;
+  }
+
+  return flag;
+}
+
+
+
 int main(int argc, char* argv[]) {
 
   // read input parameters
@@ -55,41 +252,7 @@ int main(int argc, char* argv[]) {
 
   Pythia pythia;
 
-  
-
-  // random seed
-  TRandom rndm;
-  rndm.SetSeed(0);
-  int pythiaSeed = rndm.Integer(1000000);
-  char processLine[80];
-  sprintf(processLine, "Random:Seed = %d",pythiaSeed);
-
-  pythia.readString("Random:setSeed = on");
-    pythia.readString(processLine); 
-
-  // Set process type and collision energy
-  pythia.readString("Charmonium:all  = on");;
-  pythia.readString("Beams:eCM = 13000.");
-
-  // Switch off all J/psi decays but J/psi -> e+ e-
-  pythia.readString("443:onMode = off");
-  pythia.readString("443:onIfAny = 11 -11");
-
-  // Switch off all chi_c2 decays but chi_c2 -> J/psi gamma
-  pythia.readString("445:onMode = off");
-  pythia.readString("445:onIfAny = 443 22");
-
-  // Switch off all chi_c2 decays but chi_c0 -> J/psi gamma
-  pythia.readString("10441:onMode = off");
-  pythia.readString("10441:onIfAny = 443 22");
-
-  // Switch off all chi_c2 decays but chi_c1 -> J/psi gamma
-  pythia.readString("20443:onMode = off");
-  pythia.readString("20443:onIfAny = 443 22");
-
-  //pythia.readString("PhaseSpace:pTHatMin = 7.");
-
-  pythia.init();
+  Init(&(pythia));
 
   cout << "List all decays of particle 10441, 20443, 445\n";
   pythia.particleData.list(10441);
@@ -200,7 +363,7 @@ int main(int argc, char* argv[]) {
   const int idPhoton       =  22;
   const int idPi0          =  111;
 
-  int nEvent2Print = 10;
+  int nEvent2Print = 1;
 
   // Begin event loop. Generate event
 
@@ -211,6 +374,7 @@ int main(int argc, char* argv[]) {
     // print first nEvent2Print events
     if (iEvent2Print < nEvent2Print) pythia.event.list();
     iEvent2Print++;
+    
 
     // Loop over all particles in the generated event
     double px,py,pz,p0;
@@ -221,10 +385,9 @@ int main(int argc, char* argv[]) {
 	  pythia.event[i].status() == -62 &&
 	  fabs(pythia.event[i].y()) <= ymax) {
 
-	Double_t pt = pythia.event[i].pT(); // transverse momentum
+	Double_t pt = pythia.event[i].pT(); // transverse momentum 
 	hChiC2_pt_all->Fill(pt);
 	Double_t y  = pythia.event[i].y();
-
  
 
 	// Find daughters of chi_c2
@@ -243,30 +406,25 @@ int main(int argc, char* argv[]) {
 	  pz = pythia.event[dghtChi2].pz();
 	  p0 = pythia.event[dghtChi2].e();
 
+
 	  TLorentzVector pGam(px,py,pz,p0);
-	  // printf("Photon true p = (%.3f, %.3f, %.3f, %.3f, %.3g)\n",
-	  // 	 pGam.Px(),pGam.Py(),pGam.Pz(),pGam.E(),pGam.M());
 	  TLorentzVector pGam_smeared = resolutionPhoton(pGam);
-	  // printf("Photon smea p = (%.3f, %.3f, %.3f, %.3f, %.3g)\n",
-	  // 	 pGam_smeared.Px(),pGam_smeared.Py(),pGam_smeared.Pz(),pGam_smeared.E(),pGam_smeared.M());
-	  
+
 	  int dghtJ1 = pythia.event[dghtChi1].daughter1();
 	  int dghtJ2 = pythia.event[dghtChi1].daughter2();
 
 	  // skip event if the number of J/psi daughters is not 2
 	  if (dghtJ2 - dghtJ1 != 1) continue;
 
-	  Double_t pt_gamma = pythia.event[dghtChi2].pT();
-	  Double_t eta_gamma = pythia.event[dghtChi2].eta();
-
-	  hGamma_pt_all->Fill(pt_gamma);
+	  hGamma_pt_all->Fill(pGam_smeared.Pt());
 
 
 	  // select decay J/psi -> e+ e-
 	  if (abs(pythia.event[dghtJ1].id()) == idElectron &&
 	      abs(pythia.event[dghtJ2].id()) == idElectron) {
               
-	    if (pythia.event[dghtJ1].id() == idElectron)  {
+	    if (pythia.event[dghtJ1].id() == idElectron){
+
 	      px = pythia.event[dghtJ1].px();
 	      py = pythia.event[dghtJ1].py();
 	      pz = pythia.event[dghtJ1].pz();
@@ -274,166 +432,54 @@ int main(int argc, char* argv[]) {
 
 	
 	      TLorentzVector pElec(px,py,pz,p0);
-	      // printf("Electron true p = (%.3f, %.3f, %.3f, %.3f, %.3g)\n",
-	      // 	     pElec.Px(),pElec.Py(),pElec.Pz(),pElec.E(),pElec.M());
 	      TLorentzVector pElec_smeared = resolutionElectron(pElec);
-	      // printf("Electron smea p = (%.3f, %.3f, %.3f, %.3f, %.3g)\n",
-	      // 	     pElec_smeared.Px(),pElec_smeared.Py(),pElec_smeared.Pz(),pElec_smeared.E(),pElec_smeared.M());
-		
-	      px = pythia.event[dghtJ2].px();
-	      py = pythia.event[dghtJ2].py();
-	      pz = pythia.event[dghtJ2].pz();
-	      p0 = pythia.event[dghtJ2].e();
-
-
-	      TLorentzVector pPosi(px,py,pz,p0);
-
-	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
-
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
-
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-		
-	      Double_t pt_positron = pythia.event[dghtJ2].pT();
-	      Double_t pt_electron = pythia.event[dghtJ1].pT();
-
-	      Double_t eta_positron = pythia.event[dghtJ2].eta();
-	      Double_t eta_electron = pythia.event[dghtJ1].eta();
-                
-
-	      hPositron_pt_all->Fill(pt_positron);
-	      hElectron_pt_all->Fill(pt_electron);
-
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
-		 
-		{  
-		  
-		  hChiC2_pt_cndtn_1 ->Fill(pt);
-		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-		}
-
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
-		  
-		{ 
-		  
-		  hChiC2_pt_cndtn_2 ->Fill(pt);
-		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt()); 
-
-		}
-	    }
- 
-
-	    if (pythia.event[dghtJ2].id() == idElectron)  {
-	      px = pythia.event[dghtJ1].px();
-	      py = pythia.event[dghtJ1].py();
-	      pz = pythia.event[dghtJ1].pz();
-	      p0 = pythia.event[dghtJ1].e();
-	       
-	
-	      TLorentzVector pElec(px,py,pz,p0);
-
-	      TLorentzVector pElec_smeared = resolutionElectron(pElec);
-		
-	      px = pythia.event[dghtJ2].px();
-	      py = pythia.event[dghtJ2].py();
-	      pz = pythia.event[dghtJ2].pz();
-	      p0 = pythia.event[dghtJ2].e();
-	       
-
-	      TLorentzVector pPosi(px,py,pz,p0);
-
-	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
-
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
 	      
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+		
+	      px = pythia.event[dghtJ2].px();
+	      py = pythia.event[dghtJ2].py();
+	      pz = pythia.event[dghtJ2].pz();
+	      p0 = pythia.event[dghtJ2].e();
 
- 
-	      Double_t pt_positron =pythia.event[dghtJ1].pT();
-	      Double_t pt_electron = pythia.event[dghtJ2].pT();
-	       
-	      Double_t eta_positron = pythia.event[dghtJ1].eta();
-	      Double_t eta_electron = pythia.event[dghtJ2].eta();
 
-	      hPositron_pt_all->Fill(pt_positron);
-	      hElectron_pt_all->Fill(pt_electron);
-	
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
+	      TLorentzVector pPosi(px,py,pz,p0);
+	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
+
+	      hPositron_pt_all->Fill(pPosi_smeared.Pt());
+	      hElectron_pt_all->Fill(pElec_smeared.Pt());
+
+	      Invariant_mass_spectr_creator(pElec_smeared, pPosi_smeared, pGam_smeared,
+						hMassElecPosi, hMassGamElecPosi, hMassGamElecPosi_cndtn_1,
+						hMassGamElecPosi_cndtn_2, hMassGamElecPosi_mass_diff,
+						hMassGamElecPosi_mass_diff_cndtn_1, hMassGamElecPosi_mass_diff_cndtn_2);
+
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 1.0) 
 		 
 		{  
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
 		  hChiC2_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-
 
 		}
 
 
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 5.0)  
 		  
 		{ 
 		  
 		  hChiC2_pt_cndtn_2 ->Fill(pt);
 		  hChiC2_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-
-		}
+	    
+		}	   
 	    }
 	  }
 	}
@@ -476,10 +522,7 @@ int main(int argc, char* argv[]) {
 	  // skip event if the number of J/psi daughters is not 2
 	  if (dghtJ2 - dghtJ1 != 1) continue;
 
-	  Double_t pt_gamma = pythia.event[dghtChi2].pT();
-	  Double_t eta_gamma = pythia.event[dghtChi2].eta();
-
-	  hGamma_chic0_pt_all->Fill(pt_gamma);
+	  hGamma_chic0_pt_all->Fill(pGam_smeared.Pt());
 
 
 	  // select decay J/psi -> e+ e-
@@ -508,152 +551,43 @@ int main(int argc, char* argv[]) {
 	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
 
 
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
-	
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	      Invariant_mass_spectr_creator(pElec_smeared, pPosi_smeared, pGam_smeared,
+						hMassElecPosi, hMassGamElecPosi, hMassGamElecPosi_cndtn_1,
+						hMassGamElecPosi_cndtn_2, hMassGamElecPosi_mass_diff,
+						hMassGamElecPosi_mass_diff_cndtn_1, hMassGamElecPosi_mass_diff_cndtn_2);
 
-	      
-	      Double_t pt_positron = pythia.event[dghtJ2].pT();
-	      Double_t pt_electron = pythia.event[dghtJ1].pT();
+	      hPositron_chic0_pt_all->Fill(pPosi_smeared.Pt());
+	      hElectron_chic0_pt_all->Fill(pElec_smeared.Pt());
 
-	      Double_t eta_positron = pythia.event[dghtJ2].eta();
-	      Double_t eta_electron = pythia.event[dghtJ1].eta();
-
-	      hPositron_chic0_pt_all->Fill(pt_positron);
-	      hElectron_chic0_pt_all->Fill(pt_electron);
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 1.0) 
 		 
 		{  
 		  
 		  hChiC0_pt_cndtn_1 ->Fill(pt);
 		  hChiC0_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
 
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 5.0)  
 		  
 		{ 
 		  
 		  hChiC0_pt_cndtn_2 ->Fill(pt);
 		  hChiC0_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
- 
+	    
 		}
 
-	    }
-
-
-	    if (pythia.event[dghtJ2].id() == idElectron)  {
-	      px = pythia.event[dghtJ1].px();
-	      py = pythia.event[dghtJ1].py();
-	      pz = pythia.event[dghtJ1].pz();
-	      p0 = pythia.event[dghtJ1].e();
-		   
-		   
-	      TLorentzVector pElec(px,py,pz,p0);
-
-	      TLorentzVector pElec_smeared = resolutionElectron(pElec);
-		
-	      px = pythia.event[dghtJ2].px();
-	      py = pythia.event[dghtJ2].py();
-	      pz = pythia.event[dghtJ2].pz();
-	      p0 = pythia.event[dghtJ2].e();
-		   
-		   
-	      TLorentzVector pPosi(px,py,pz,p0);
-
-	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
-		   
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
-		
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-
-	     	   
-	      Double_t pt_positron =pythia.event[dghtJ1].pT();
-	      Double_t pt_electron = pythia.event[dghtJ2].pT();
-		   
-	      Double_t eta_positron = pythia.event[dghtJ1].eta();
-	      Double_t eta_electron = pythia.event[dghtJ2].eta();
-		   
-
-	      hPositron_pt_all->Fill(pt_positron);
-	      hElectron_pt_all->Fill(pt_electron);
-		   
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
-		 
-		{  
-		  
-		  hChiC0_pt_cndtn_1 ->Fill(pt);
-		  hChiC0_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-
-		}
-
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
-		  
-		{ 
-		  
-		  hChiC0_pt_cndtn_2 ->Fill(pt);
-		  hChiC0_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-
-		}
 	    }
 	  }
 	}
@@ -673,7 +607,7 @@ int main(int argc, char* argv[]) {
 	int dghtChi1 = pythia.event[i].daughter1(); // first daughter
 	int dghtChi2 = pythia.event[i].daughter2(); // last  daughter
 
-	// skip event if the number of chi_c0 daughters is not 2
+	// skip event if the number of chi_c1 daughters is not 2
 	if (dghtChi2 - dghtChi1 != 1) continue;
 
 	// select decay chi_c1 -> J/psi gamma
@@ -696,10 +630,7 @@ int main(int argc, char* argv[]) {
 	  // skip event if the number of J/psi daughters is not 2
 	  if (dghtJ2 - dghtJ1 != 1) continue;
 
-	  Double_t pt_gamma = pythia.event[dghtChi2].pT();
-	  Double_t eta_gamma = pythia.event[dghtChi2].eta();
-
-	  hGamma_chic1_pt_all->Fill(pt_gamma);
+	  hGamma_chic1_pt_all->Fill(pGam_smeared.Pt());
 
 
 	  // select decay J/psi -> e+ e-
@@ -728,147 +659,41 @@ int main(int argc, char* argv[]) {
 
 	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
 
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
-	
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	      Invariant_mass_spectr_creator(pElec_smeared, pPosi_smeared, pGam_smeared,
+						hMassElecPosi, hMassGamElecPosi, hMassGamElecPosi_cndtn_1,
+						hMassGamElecPosi_cndtn_2, hMassGamElecPosi_mass_diff,
+						hMassGamElecPosi_mass_diff_cndtn_1, hMassGamElecPosi_mass_diff_cndtn_2);
 
-	      
-	      Double_t pt_positron = pythia.event[dghtJ2].pT();
-	      Double_t pt_electron = pythia.event[dghtJ1].pT();
+	      hPositron_chic1_pt_all->Fill(pPosi_smeared.Pt());
+	      hElectron_chic1_pt_all->Fill(pElec_smeared.Pt());
 
-	      Double_t eta_positron = pythia.event[dghtJ2].eta();
-	      Double_t eta_electron = pythia.event[dghtJ1].eta();
-                
-
-	      hPositron_chic1_pt_all->Fill(pt_positron);
-	      hElectron_chic1_pt_all->Fill(pt_electron);
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 1.0) 
 		 
 		{  
 		  
 		  hChiC1_pt_cndtn_1 ->Fill(pt);
 		  hChiC1_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
 
 		}
 
 
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
+	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
+		  abs(pElec_smeared.Eta()) < 0.8  &&
+		  abs(pGam_smeared.Eta())  < 0.12 &&
+		  pPosi_smeared.Pt()       > 0.5  &&
+		  pElec_smeared.Pt()       > 0.5  &&
+		  pGam_smeared.Pt()        > 5.0)  
 		  
 		{ 
 		  
 		  hChiC1_pt_cndtn_2 ->Fill(pt);
 		  hChiC1_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-		}
-	    }
-
-
-	    if (pythia.event[dghtJ2].id() == idElectron)  {
-
-	      px = pythia.event[dghtJ1].px();
-	      py = pythia.event[dghtJ1].py();
-	      pz = pythia.event[dghtJ1].pz();
-	      p0 = pythia.event[dghtJ1].e();
-		   
-	
-	      TLorentzVector pElec(px,py,pz,p0);
-		   
-	      TLorentzVector pElec_smeared = resolutionElectron(pElec);
-		   
-	      px = pythia.event[dghtJ2].px();
-	      py = pythia.event[dghtJ2].py();
-	      pz = pythia.event[dghtJ2].pz();
-	      p0 = pythia.event[dghtJ2].e();
-		   
-
-	      TLorentzVector pPosi(px,py,pz,p0);
-		   
-	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
-		   
-	      // Fill invariant mass of momentum sum (photon e+ e-)
-	      Double_t massGamElecPosi = (pGam_smeared + pElec_smeared + pPosi_smeared).M();
-	      Double_t ptGamElecPosi   = (pGam_smeared + pElec_smeared + pPosi_smeared).Pt();
-	      hMassGamElecPosi->Fill(massGamElecPosi,ptGamElecPosi);
-	      // Fill invariant mass of momentum sum (e+ e-)
-	      hMassElecPosi->Fill((pElec_smeared + pPosi_smeared).M(),
-				  (pElec_smeared + pPosi_smeared).Pt());
-		
-	      // Fill invariant mass of different of momentum sum (photon e+ e-) (e+ e-)
-	      hMassGamElecPosi_mass_diff->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-					       (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-	      	   
-	      Double_t pt_positron =pythia.event[dghtJ1].pT();
-	      Double_t pt_electron = pythia.event[dghtJ2].pT();
-		   
-	      Double_t eta_positron = pythia.event[dghtJ1].eta();
-	      Double_t eta_electron = pythia.event[dghtJ2].eta();
-		   
-	      hPositron_pt_all->Fill(pt_positron);
-	      hElectron_pt_all->Fill(pt_electron);
-		   
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 1.0) 
-		 
-		{  
-		  
-		  hChiC1_pt_cndtn_1 ->Fill(pt);
-		  hChiC1_y_cndtn_1  ->Fill(y);
-		  hMassGamElecPosi_cndtn_1->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-					    	 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_1->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
-		}
-
-
-	      if (abs(eta_positron) < 0.8  &&
-		  abs(eta_electron) < 0.8  &&
-		  abs(eta_gamma)    < 0.12 &&
-		  pt_electron       > 0.5  &&
-		  pt_positron       > 0.5  &&
-		  pt_gamma          > 5.0)  
-		  
-		{ 
-		  
-		  hChiC1_pt_cndtn_2 ->Fill(pt);
-		  hChiC1_y_cndtn_2  ->Fill(y);
-		  hMassGamElecPosi_cndtn_2->Fill((pElec_smeared + pPosi_smeared + pGam_smeared).M(),
-						 (pElec_smeared + pPosi_smeared + pGam_smeared).Pt());
-		  
-		  hMassGamElecPosi_mass_diff_cndtn_2->Fill((pGam_smeared + pElec_smeared + pPosi_smeared).M()-(pElec_smeared + pPosi_smeared).M(),
-							   (pGam_smeared + pElec_smeared + pPosi_smeared).Pt());
+	    
 		}
 	    }
 	  }
