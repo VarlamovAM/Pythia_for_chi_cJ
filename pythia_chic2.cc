@@ -93,13 +93,13 @@ void Invariant_mass_spectr_creator(TLorentzVector p_el, TLorentzVector p_pos, TL
   hMassGamElecPosi_mass_diff->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(), 
 				   (p_el + p_pos + p_gam).Pt());
 
-  if (true){
+  if (true){//make condition checking function
     hMassGamElecPosi_cndtn_1->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt());
     hMassGamElecPosi_mass_diff_cndtn_1->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(),
 					     (p_el + p_pos + p_gam).Pt());
   }
 
-  if (true){
+  if (true){//make condition checking function
     hMassGamElecPosi_cndtn_2->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt());
     hMassGamElecPosi_mass_diff_cndtn_2->Fill((p_el + p_pos + p_gam).M() - (p_el + p_pos).M(), 
 					     (p_el + p_pos + p_gam).Pt());
@@ -119,7 +119,7 @@ bool IsPhotonDetectedInPHOS(TLorentzVector p){
 
   double y = 0.5*log((p0 + pz)/(p0 - pz));
   double phi;
-  
+  //use modiff funtion of atan();
 
   if (px > 0. && py > 0.){
     phi = atan(py/px);
@@ -146,8 +146,8 @@ bool IsPhotonDetectedInPHOS(TLorentzVector p){
   }
 
   if (fabs(y) < 0.12              &&
-      (phi > -11/9 * TMath::Pi()) && 
-      (phi < -4/9 * TMath::Pi())  &&
+      (phi > -11./9. * TMath::Pi()) && 
+      (phi < -4./9. * TMath::Pi())  &&
       p0 > 1.0                    ){
     flag = true;
   }  
@@ -214,8 +214,8 @@ bool IsPhotonDetectedInEMCAL(TLorentzVector p){
   }
 
   if (fabs(y) < 0.7                 &&
-      (phi > 87/90 * TMath::Pi())   && 
-      (phi < 107/90 * TMath::Pi())  &&
+      (phi > 87./90. * TMath::Pi())   && 
+      (phi < 187./90. * TMath::Pi())  &&
       p0 > 2.5                        ){
     flag = true;
   }  
