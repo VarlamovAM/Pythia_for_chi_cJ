@@ -41,6 +41,12 @@ void Invariant_mass_spectr_creator(TLorentzVector, TLorentzVector, TLorentzVecto
 TLorentzVector resolutionPhoton  (TLorentzVector);
 TLorentzVector resolutionElectron(TLorentzVector);
 
+bool IsElectronDetectedInCTS(TLorentzVector);
+bool IsPhotonDetectedInEMCAL(TLorentzVector);
+bool IsPhotonDetectedInPHOS (TLorentzVector); 
+
+
+
 int main(int argc, char* argv[]) {
 
   // read input parameters
@@ -226,6 +232,7 @@ int main(int argc, char* argv[]) {
 
 
 	  // select decay J/psi -> e+ e-
+
 	  if (abs(pythia.event[dghtJ1].id()) == idElectron &&
 	      abs(pythia.event[dghtJ2].id()) == idElectron) {
               
@@ -246,6 +253,8 @@ int main(int argc, char* argv[]) {
 	      pz = pythia.event[dghtJ2].pz();
 	      p0 = pythia.event[dghtJ2].e();
 
+	      
+
 
 	      TLorentzVector pPosi(px,py,pz,p0);
 	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
@@ -258,13 +267,9 @@ int main(int argc, char* argv[]) {
 						hMassGamElecPosi_cndtn_2, hMassGamElecPosi_mass_diff,
 						hMassGamElecPosi_mass_diff_cndtn_1, hMassGamElecPosi_mass_diff_cndtn_2);
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 1.0) 
-		 
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared))
 		{  
 		  
 		  hChiC2_pt_cndtn_1 ->Fill(pt);
@@ -273,12 +278,10 @@ int main(int argc, char* argv[]) {
 		}
 
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 5.0)  
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared)   &&
+		  pGam_smeared.E() > 5.0)  
 		  
 		{ 
 		  
@@ -365,12 +368,9 @@ int main(int argc, char* argv[]) {
 	      hPositron_chic0_pt_all->Fill(pPosi_smeared.Pt());
 	      hElectron_chic0_pt_all->Fill(pElec_smeared.Pt());
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 1.0) 
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared)) 
 		 
 		{  
 		  
@@ -380,12 +380,10 @@ int main(int argc, char* argv[]) {
 		}
 
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 5.0)  
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared)   &&
+		  pGam_smeared.E() > 5.0)  
 		  
 		{ 
 		  
@@ -473,12 +471,9 @@ int main(int argc, char* argv[]) {
 	      hPositron_chic1_pt_all->Fill(pPosi_smeared.Pt());
 	      hElectron_chic1_pt_all->Fill(pElec_smeared.Pt());
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 1.0) 
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared)) 
 		 
 		{  
 		  
@@ -488,12 +483,10 @@ int main(int argc, char* argv[]) {
 		}
 
 
-	      if (abs(pPosi_smeared.Eta()) < 0.8  &&
-		  abs(pElec_smeared.Eta()) < 0.8  &&
-		  abs(pGam_smeared.Eta())  < 0.12 &&
-		  pPosi_smeared.Pt()       > 0.5  &&
-		  pElec_smeared.Pt()       > 0.5  &&
-		  pGam_smeared.Pt()        > 5.0)  
+	      if (IsElectronDetectedInCTS(pElec_smeared) &&
+		  IsElectronDetectedInCTS(pPosi_smeared) &&
+		  IsPhotonDetectedInPHOS(pGam_smeared)   &&
+		  pGam_smeared.E() > 5.0)  
 		  
 		{ 
 		  
