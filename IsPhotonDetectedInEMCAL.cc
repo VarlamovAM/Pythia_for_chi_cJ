@@ -42,7 +42,7 @@ bool IsPhotonDetectedInEMCAL(TLorentzVector p)
   if (fabs(y) < 0.7                 &&
       (phi > 87./90. * TMath::Pi())   && 
       (phi < 187./90. * TMath::Pi())  &&
-      p0 > 2.5                        ){
+      p0 > 2.0                        ){
     flag = true;
   }  
   
