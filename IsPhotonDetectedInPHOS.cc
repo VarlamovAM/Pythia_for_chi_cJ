@@ -1,7 +1,11 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
-bool IsPhotonDetectedInPHOS(TLorentzVector p){
+bool IsPhotonDetectedInPHOS(TLorentzVector p)
+{
+  // Check if a particle with 4-momentum p hits the PHOS acceptance
+  // |y|<0.12, 250<phi<320 degrees
+  
   bool flag = false;
 
   double px = p.Px();
@@ -9,38 +13,21 @@ bool IsPhotonDetectedInPHOS(TLorentzVector p){
   double pz = p.Pz();
   double p0 = p.E();
 
-  double y = 0.5*log((p0 + pz)/(p0 - pz));
+  double y;
+  if (p0>pz)
+    y = 0.5*log((p0 + pz)/(p0 - pz));
+  else
+    y=100;
+
   double phi;
-  //use modiff funtion of atan();
+  phi = TMath::ATan2(py,px); // azimuth angle in range (-pi,+pi)
+  if (phi < 0) phi += TMath::TwoPi();  // azimuth angle in range (0,+2pi)
+  phi *= TMath::RadToDeg();
 
-  if (px > 0. && py > 0.){
-    phi = atan(py/px);
-  }
-
-  if (px > 0. && py < 0.){
-    phi = atan(py/px);
-  }
-
-  if (px < 0. && py > 0.){
-    phi = TMath::Pi() + atan(py/px);
-  }
-
-  if (px < 0. && py < 0.){
-    phi = atan(py/px) - TMath::Pi();
-  }
-
-  if (px == 0. && py > 0.){
-    phi = TMath::Pi()/2;
-  }
-
-  if (px == 0. && py < 0.){
-    phi = -1 * TMath::Pi()/2;
-  }
-
-  if (fabs(y) < 0.12              &&
-      (phi > -11./9. * TMath::Pi()) && 
-      (phi < -4./9. * TMath::Pi())  &&
-      p0 > 1.0                    ){
+  if (fabs(y) < 0.12 &&
+      phi > 250.     && 
+      phi < 320.     &&
+      p0 > 1.0       ){
     flag = true;
   }  
   
