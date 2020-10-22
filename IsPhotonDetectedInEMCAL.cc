@@ -1,4 +1,5 @@
 #include "TLorentzVector.h"
+#include <iostream>
 
 bool IsPhotonDetectedInEMCAL(TLorentzVector p)
 {
@@ -15,33 +16,13 @@ bool IsPhotonDetectedInEMCAL(TLorentzVector p)
   double phi;
   
 
-  if (px > 0. && py > 0.){
-    phi = atan(py/px);
-  }
+  phi = TMath::ATan(py/px);
 
-  if (px > 0. && py < 0.){
-    phi = atan(py/px);
-  }
-
-  if (px < 0. && py > 0.){
-    phi = TMath::Pi() + atan(py/px);
-  }
-
-  if (px < 0. && py < 0.){
-    phi = atan(py/px) - TMath::Pi();
-  }
-
-  if (px == 0. && py > 0.){
-    phi = TMath::Pi()/2;
-  }
-
-  if (px == 0. && py < 0.){
-    phi = -1 * TMath::Pi()/2;
-  }
+  std::cout << "phi = " << TMath::RadToDeg() * phi << " y = " << y << " E = " << p0 << "\n";
 
   if (fabs(y) < 0.7                 &&
-      (phi > 87./90. * TMath::Pi())   && 
-      (phi < 187./90. * TMath::Pi())  &&
+      (phi > 87./180. * TMath::Pi())   && 
+      (phi < 187./180. * TMath::Pi())  &&
       p0 > 2.0                        ){
     flag = true;
   }  

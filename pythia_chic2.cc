@@ -75,6 +75,8 @@ int main(int argc, char* argv[]) {
   double ptMax = 50.;  //GeV
   double yMin  = 0.; 
   double yMax  = 0.5; 
+  double phiMin = 0.;
+  double phiMax = 360.;
   
 
   const int nPtBins = 250;
@@ -85,6 +87,9 @@ int main(int argc, char* argv[]) {
   double ymax = 0.5;
   
   // create histograms
+  TH1F *hChiC_phi_cndtn_3     = new TH1F("hChiC_phi_cndtn_3"     ,"All #chi_{cJ} #varphi spectrum" , 360, phiMin, phiMax);
+  hChiC_phi_cndtn_3->Sumw2();
+
   TH1F *hChiC2_pt_all     = new TH1F("hChiC2_pt_all"     ,"All #chi_{c2} p_{T} spectrum" , nPtBins, ptMin, ptMax);
   hChiC2_pt_all->Sumw2();
 
@@ -238,6 +243,7 @@ int main(int argc, char* argv[]) {
 
 	Double_t pt = pythia.event[i].pT(); // transverse momentum 
 	hChiC2_pt_all->Fill(pt);
+	double ins_phi = pythia.event[i].phi();
 	Double_t y  = pythia.event[i].y();
  
 
@@ -330,12 +336,14 @@ int main(int argc, char* argv[]) {
 	    
 		}
 
+
 	      if (IsPhotonDetectedInEMCAL(pElec_smeared) &&
 		  IsPhotonDetectedInEMCAL(pPosi_smeared) &&
 		  IsPhotonDetectedInPHOS(pGam_smeared))  
 		  
 		{ 
- 
+		  
+		  hChiC_phi_cndtn_3->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC2_pt_cndtn_3 ->Fill(pt,br[2]);
 		  hChiC2_y_cndtn_3  ->Fill(y,br[2]);
 	    
@@ -598,14 +606,13 @@ int main(int argc, char* argv[]) {
 	  py = pythia.event[dghtPi02].py();
 	  pz = pythia.event[dghtPi02].pz();
 	  p0 = pythia.event[dghtPi02].e();
-	  TLorentzVector pGam2(px,py,pz,p0);
+ 	  TLorentzVector pGam2(px,py,pz,p0);
 	  TLorentzVector pGam2_smeared = resolutionPhoton(pGam2);
 
 	  hMass2Gamma->Fill((pGam1_smeared + pGam2_smeared).M(),
 			    (pGam1_smeared + pGam2_smeared).Pt());
 	}
       }
-
     } // End of particle loop
   } // End of event loop
 
@@ -622,6 +629,7 @@ int main(int argc, char* argv[]) {
   double ptBinSize = (ptMax-ptMin) / nPtBins;
   double yBinSize  = (yMax-yMin) / nyBins;
 
+  hChiC_phi_cndtn_3       ->Scale(sigmaweight/(1. * 2. * 360.)); 
   hChiC2_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
   hChiC0_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
   hChiC1_pt_all            ->Scale(sigmaweight/(ptBinSize * 2. * ymax));
@@ -657,7 +665,8 @@ int main(int argc, char* argv[]) {
   char fn[1024];
   sprintf(fn, "%s", "pythia_chic2.root");
   TFile* outFile = new TFile(fn, "RECREATE");
- 
+
+  hChiC_phi_cndtn_3                ->Write();
   hChiC2_pt_all                     ->Write();
   hChiC0_pt_all                     ->Write();
   hChiC1_pt_all                     ->Write();

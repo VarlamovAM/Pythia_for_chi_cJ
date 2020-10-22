@@ -44,10 +44,10 @@ void Invariant_mass_spectr_creator(TLorentzVector p_el, TLorentzVector p_pos, TL
 					       (p_el + p_pos + p_gam).Pt(), br);
     }
 
-  if (IsElectronDetectedInCTS(p_el)  &&
-      IsElectronDetectedInCTS(p_pos) &&
+  if (IsPhotonDetectedInEMCAL(p_el)  &&
+      IsPhotonDetectedInEMCAL(p_pos) &&
       IsPhotonDetectedInPHOS(p_gam)  &&
-      p_gam.E() > 1.0)
+      p_gam.E() > 2.0)
     {
       
       hMassGamElecPosi_cndtn_3->Fill((p_el + p_pos + p_gam).M(), (p_el + p_pos + p_gam).Pt(), br);
