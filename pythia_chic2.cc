@@ -1,13 +1,3 @@
-// File: hist.cc
-// This is a simple test program.
-// It studies the charged multiplicity distribution at the LHC.
-// Modified by Rene Brun, Axel Naumann and Bernhard Meirose 
-// to use ROOT for histogramming.
-// Copyright (C) 2013 Torbjorn Sjostrand
-
-// Define environment variable PYTHIA8DATA for xlmdoc directory
-// for example:
-// export PYTHIA8DATA=$ALICE_ROOT/PYTHIA8/pythia8210/xmldoc/
 
 // Stdlib header file for input and output.
 #include <iostream>
@@ -710,6 +700,8 @@ int main(int argc, char* argv[]) {
  
   outFile->Close();
   delete outFile;
+
+  cout << "\nProgram exited without errors!\n\n";
 
   return 0;
 }
