@@ -200,7 +200,6 @@ int main(int argc, char* argv[]) {
   TH2F *hMassGamElecPosi_mass_diff_cndtn_3 = new TH2F("hMassGamElecPosi_mass_diff_cndtn_3","M(#gamma e^{+}e^{-}) vs p_{T}",160.,0.,0.8,50,0.,50.);
   hMassGamElecPosi_mass_diff_cndtn_3->Sumw2();
 
-
   const int idChic0        =  10441;
   const int idChic1        =  20443;
   const int idChic2        =  445;
@@ -349,6 +348,7 @@ int main(int argc, char* argv[]) {
 
 	Double_t pt = pythia.event[i].pT(); // transverse momentum
 	hChiC0_pt_all->Fill(pt);
+	double ins_phi = pythia.event[i].phi();
 	Double_t y  = pythia.event[i].y(); 
 
 
@@ -447,7 +447,8 @@ int main(int argc, char* argv[]) {
 		  IsPhotonDetectedInPHOS(pGam_smeared))  
 		  
 		{ 
-		  
+
+		  hChiC_phi_cndtn_3 ->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC0_pt_cndtn_3 ->Fill(pt,br[0]);
 		  hChiC0_y_cndtn_3  ->Fill(y,br[0]);
 	    
@@ -463,6 +464,7 @@ int main(int argc, char* argv[]) {
 
 	Double_t pt = pythia.event[i].pT(); // transverse momentum
 	hChiC1_pt_all->Fill(pt);
+	double ins_phi = pythia.event[i].phi();
 	Double_t y  = pythia.event[i].y(); 
 
 
@@ -561,7 +563,8 @@ int main(int argc, char* argv[]) {
 		  IsPhotonDetectedInPHOS(pGam_smeared))  
 		  
 		{ 
-		  
+
+		  hChiC_phi_cndtn_3 ->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC1_pt_cndtn_3 ->Fill(pt,br[1]);
 		  hChiC1_y_cndtn_3  ->Fill(y,br[1]);
 	    
@@ -656,7 +659,7 @@ int main(int argc, char* argv[]) {
   sprintf(fn, "%s", "pythia_chic2.root");
   TFile* outFile = new TFile(fn, "RECREATE");
 
-  hChiC_phi_cndtn_3                ->Write();
+  hChiC_phi_cndtn_3                 ->Write();
   hChiC2_pt_all                     ->Write();
   hChiC0_pt_all                     ->Write();
   hChiC1_pt_all                     ->Write();

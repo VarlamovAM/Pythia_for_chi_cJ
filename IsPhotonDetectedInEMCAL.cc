@@ -26,10 +26,15 @@ bool IsPhotonDetectedInEMCAL(TLorentzVector p)
   
   // std::cout << "In EMCAL: phi = " <<  phi << " y = " << y << " E = " << p0 << "\n";
 
-  if (fabs(y) < 0.7 &&
-      phi > 87.   && 
-      phi < 187.  &&
-      p0 > 2.0      ) {
+  if ((fabs(y) < 0.7   &&
+       phi > 87.       && 
+       phi < 187.      &&
+       p0 > 2.0 )      ||
+      (fabs(y) < 0.7   &&
+       fabs(y) > 0.12  &&
+       phi > 260.      &&
+       phi < 327.      &&
+       p0 > 2.0 )      ){
     flag = true;
   }  
   
