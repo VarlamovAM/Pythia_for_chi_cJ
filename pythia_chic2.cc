@@ -200,6 +200,21 @@ int main(int argc, char* argv[]) {
   TH2F *hMassGamElecPosi_mass_diff_cndtn_3 = new TH2F("hMassGamElecPosi_mass_diff_cndtn_3","M(#gamma e^{+}e^{-}) vs p_{T}",160.,0.,0.8,50,0.,50.);
   hMassGamElecPosi_mass_diff_cndtn_3->Sumw2();
 
+  TH2F **electrons_hist_array = new TH2F*[4];
+
+  TH2F *hChiC_electrons_phi_rapid = new TH2F("hChiC_electrons_phi_rapid","all #chi_{cJ} #phi, y", 360., 0., TMath::TwoPi(), 100., -0.7, 0.7);
+  hChiC_electrons_phi_rapid->Sumw2();
+
+  electrons_hist_array[0] =  new TH2F("hChiC_electrons_phi_rapid_p0_0dot5","all #chi_{cJ} #phi, y", 360., 0., TMath::TwoPi(), 100., -0.7, 0.7);
+  electrons_hist_array[1] =  new TH2F("hChiC_electrons_phi_rapid_p0_1dot0","all #chi_{cJ} #phi, y", 360., 0., TMath::TwoPi(), 100., -0.7, 0.7);
+  electrons_hist_array[2] =  new TH2F("hChiC_electrons_phi_rapid_p0_1dot5","all #chi_{cJ} #phi, y", 360., 0., TMath::TwoPi(), 100., -0.7, 0.7);
+  electrons_hist_array[3] =  new TH2F("hChiC_electrons_phi_rapid_p0_2dot0","all #chi_{cJ} #phi, y", 360., 0., TMath::TwoPi(), 100., -0.7, 0.7);
+ 
+  electrons_hist_array[0]->Sumw2();
+  electrons_hist_array[1]->Sumw2();
+  electrons_hist_array[2]->Sumw2();
+  electrons_hist_array[3]->Sumw2();
+
   const int idChic0        =  10441;
   const int idChic1        =  20443;
   const int idChic2        =  445;
@@ -233,6 +248,7 @@ int main(int argc, char* argv[]) {
 	Double_t pt = pythia.event[i].pT(); // transverse momentum 
 	hChiC2_pt_all->Fill(pt);
 	double ins_phi = pythia.event[i].phi();
+	if (ins_phi < 0) ins_phi += TMath::TwoPi();
 	Double_t y  = pythia.event[i].y();
  
 
@@ -276,7 +292,28 @@ int main(int argc, char* argv[]) {
 	      py = pythia.event[dghtJ1].py();
 	      pz = pythia.event[dghtJ1].pz();
 	      p0 = pythia.event[dghtJ1].e();
+	      
+	      double electron_y = pythia.event[dghtJ1].y();
+	      double electron_phi = pythia.event[dghtJ1].phi();
+	      if (electron_phi < 0){
+		electron_phi += TMath::TwoPi();
+	      }
+	      
+	      if (p0 >= 0.5){
+		electrons_hist_array[0]->Fill(electron_phi, electron_y);
+	      }
 
+	      if (p0 >= 1.0){
+		electrons_hist_array[1]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 1.5){
+		electrons_hist_array[2]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 2.0){
+		electrons_hist_array[3]->Fill(electron_phi, electron_y);
+	      }
 	
 	      TLorentzVector pElec(px,py,pz,p0);
 	      TLorentzVector pElec_smeared = resolutionElectron(pElec);
@@ -288,7 +325,7 @@ int main(int argc, char* argv[]) {
 	      p0 = pythia.event[dghtJ2].e();
 
 	      
-
+	      cout << "phi_{e^{+}} = " << pythia.event[dghtJ2].phi() << " phi_{e^{-}} = " << pythia.event[dghtJ1].phi() << " phi_{gamma} = " << pythia.event[dghtChi2].phi() << "   |phi_{e^{+}} - phi_{e^{-}}|  = "  << fabs(pythia.event[dghtJ2].phi() - pythia.event[dghtJ1].phi()) << "     " << (pythia.event[dghtJ2].phi() + pythia.event[dghtJ1].phi())/2 - pythia.event[i].phi() <<  "\n";
 
 	      TLorentzVector pPosi(px,py,pz,p0);
 	      TLorentzVector pPosi_smeared = resolutionElectron(pPosi);
@@ -332,7 +369,6 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 		  
-		  hChiC_phi_cndtn_3->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC2_pt_cndtn_3 ->Fill(pt,br[2]);
 		  hChiC2_y_cndtn_3  ->Fill(y,br[2]);
 	    
@@ -349,9 +385,8 @@ int main(int argc, char* argv[]) {
 	Double_t pt = pythia.event[i].pT(); // transverse momentum
 	hChiC0_pt_all->Fill(pt);
 	double ins_phi = pythia.event[i].phi();
+	if (ins_phi < 0) ins_phi += TMath::TwoPi();
 	Double_t y  = pythia.event[i].y(); 
-
-
 
 	// Find daughters of chi_c0
 	int dghtChi1 = pythia.event[i].daughter1(); // first daughter
@@ -393,6 +428,27 @@ int main(int argc, char* argv[]) {
 	      pz = pythia.event[dghtJ1].pz();
 	      p0 = pythia.event[dghtJ1].e();
 
+	      double electron_y = pythia.event[dghtJ1].y();
+	      double electron_phi = pythia.event[dghtJ1].phi();
+	      if (electron_phi < 0){
+		electron_phi += TMath::TwoPi();
+	      }
+	     
+	      if (p0 >= 0.5){
+		electrons_hist_array[0]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 1.0){
+		electrons_hist_array[1]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 1.5){
+		electrons_hist_array[2]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 2.0){
+		electrons_hist_array[3]->Fill(electron_phi, electron_y);
+	      }
 	
 	      TLorentzVector pElec(px,py,pz,p0);
 
@@ -402,7 +458,8 @@ int main(int argc, char* argv[]) {
 	      py = pythia.event[dghtJ2].py();
 	      pz = pythia.event[dghtJ2].pz();
 	      p0 = pythia.event[dghtJ2].e();
-
+	      
+	      cout << "phi_{e^{+}} = " << pythia.event[dghtJ2].phi() << " phi_{e^{-}} = " << pythia.event[dghtJ1].phi() << " phi_{gamma} = " << pythia.event[dghtChi2].phi() << "\n";
 
 	      TLorentzVector pPosi(px,py,pz,p0);
 
@@ -448,7 +505,6 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 
-		  hChiC_phi_cndtn_3 ->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC0_pt_cndtn_3 ->Fill(pt,br[0]);
 		  hChiC0_y_cndtn_3  ->Fill(y,br[0]);
 	    
@@ -465,8 +521,8 @@ int main(int argc, char* argv[]) {
 	Double_t pt = pythia.event[i].pT(); // transverse momentum
 	hChiC1_pt_all->Fill(pt);
 	double ins_phi = pythia.event[i].phi();
-	Double_t y  = pythia.event[i].y(); 
-
+	if (ins_phi < 0) ins_phi += TMath::TwoPi();
+	Double_t y  = pythia.event[i].y();
 
 
 	// Find daughters of chi_c1
@@ -510,6 +566,28 @@ int main(int argc, char* argv[]) {
 	      pz = pythia.event[dghtJ1].pz();
 	      p0 = pythia.event[dghtJ1].e();
 
+	      double electron_y = pythia.event[dghtJ1].y();
+	      double electron_phi = pythia.event[dghtJ1].phi();
+	      if (electron_phi < 0){
+		electron_phi += TMath::TwoPi();
+	      }
+
+	      if (p0 >= 0.5){
+		electrons_hist_array[0]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 1.0){
+		electrons_hist_array[1]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 1.5){
+		electrons_hist_array[2]->Fill(electron_phi, electron_y);
+	      }
+
+	      if (p0 >= 2.0){
+		electrons_hist_array[3]->Fill(electron_phi, electron_y);
+	      }
+	      
 	
 	      TLorentzVector pElec(px,py,pz,p0);
 
@@ -520,6 +598,7 @@ int main(int argc, char* argv[]) {
 	      pz = pythia.event[dghtJ2].pz();
 	      p0 = pythia.event[dghtJ2].e();
 
+	      cout << "phi_{e^{+}} = " << pythia.event[dghtJ2].phi() << " phi_{e^{-}} = " << pythia.event[dghtJ1].phi() << " phi_{gamma} = " << pythia.event[dghtChi2].phi() << "\n";
 
 	      TLorentzVector pPosi(px,py,pz,p0);
 
@@ -564,7 +643,6 @@ int main(int argc, char* argv[]) {
 		  
 		{ 
 
-		  hChiC_phi_cndtn_3 ->Fill(TMath::RadToDeg() * ins_phi);
 		  hChiC1_pt_cndtn_3 ->Fill(pt,br[1]);
 		  hChiC1_y_cndtn_3  ->Fill(y,br[1]);
 	    
@@ -700,7 +778,12 @@ int main(int argc, char* argv[]) {
   hMassGamElecPosi_mass_diff_cndtn_1->Write();
   hMassGamElecPosi_mass_diff_cndtn_2->Write();
   hMassGamElecPosi_mass_diff_cndtn_3->Write();
- 
+  hChiC_electrons_phi_rapid         ->Write();
+  electrons_hist_array[0]           ->Write();
+  electrons_hist_array[1]           ->Write();
+  electrons_hist_array[2]           ->Write();
+  electrons_hist_array[3]           ->Write();
+
   outFile->Close();
   delete outFile;
 
